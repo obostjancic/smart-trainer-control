@@ -52,7 +52,6 @@ class BikeBridge extends EventEmitter {
   }
 
   async sendControl(control: keyof BikeControl, value: number) {
-    console.log("sendControl", control, value);
     if (this.bike) {
       await this.bike.sendControl(control, value);
     }

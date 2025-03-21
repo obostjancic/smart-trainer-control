@@ -1,103 +1,96 @@
-import { useState, useRef, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Box, Stack } from "styled-system/jsx";
-import { Dashboard } from "./components/Dashboard";
-import { BikeProvider } from "./components/BikeProvider";
-import { Controls } from "./components/Controls";
+import { ActivityChart } from "./components/ActivityChart";
+import { ActivityControls } from "./components/ActivityControls";
+import { BikeControls } from "./components/BikeControls";
+import { BikeProvider, useBike } from "./components/BikeProvider";
+import { CurrentStats } from "./components/CurrentStats";
+import {
+  ActivityPoint,
+  ActivityStatus,
+  useActivity,
+} from "./hooks/useActivity";
 import { BikeData } from "./lib/bike/types";
-import { generateTCX, mergeTCXData } from "./lib/tcx";
-
-interface ActivityPoint {
-  timestamp: number;
-  power?: number;
-  speed?: number;
-}
+import { mergeTCX } from "./utils/file";
 
 function AppContent() {
-  const [isActive, setIsActive] = useState(false);
-  const [startTime, setStartTime] = useState<number>(0);
-  const activityDataRef = useRef<ActivityPoint[]>([]);
+  const {
+    status,
+    addActivityPoint,
+    getActivityPoints,
+    startActivity,
+    pauseActivity,
+    resumeActivity,
+    stopActivity,
+    timeElapsed,
+  } = useActivity();
+  const { isConnected } = useBike();
 
-  const handleStartActivity = () => {
-    activityDataRef.current = [];
-    setStartTime(Date.now());
-    setIsActive(true);
-  };
+  const [currentData, setCurrentData] = useState<BikeData>({});
+  const chartData = useRef<ActivityPoint[]>([]);
 
-  const downloadTCX = (content: string, prefix: string) => {
-    const blob = new Blob([content], { type: "application/xml" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${prefix}-${new Date().toISOString()}.tcx`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
+  useEffect(() => {
+    function handleBikeData(event: MessageEvent) {
+      if (event.data.type === "bike-data") {
+        const data = event.data.payload as BikeData;
+        setCurrentData(data);
+        addActivityPoint(data.instantaneousPower, data.speed);
+        if (status === ActivityStatus.Running)
+          chartData.current.push({
+            timestamp: timeElapsed,
+            power: data.instantaneousPower,
+            speed: data.speed,
+          });
+      }
+    }
+
+    window.addEventListener("message", handleBikeData);
+    return () => window.removeEventListener("message", handleBikeData);
+  }, [addActivityPoint, getActivityPoints, status, timeElapsed]);
+
+  const handleStartActivity = useCallback(() => {
+    chartData.current = [];
+    startActivity();
+  }, [startActivity]);
+
+  const handlePauseActivity = useCallback(() => {
+    pauseActivity();
+  }, [pauseActivity]);
 
   const handleStopActivity = useCallback(async () => {
-    setIsActive(false);
+    stopActivity();
+    mergeTCX(getActivityPoints());
+  }, [stopActivity, getActivityPoints]);
 
-    // Create file input and trigger click
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = ".tcx";
-
-    fileInput.onchange = async () => {
-      const file = fileInput.files?.[0];
-      if (file) {
-        try {
-          const existingTCX = await file.text();
-          const mergedTCX = mergeTCXData(existingTCX, activityDataRef.current);
-          downloadTCX(mergedTCX, "merged-activity");
-        } catch (error) {
-          console.error("Error merging TCX files:", error);
-          alert("Error merging TCX files. Please check the file format.");
-          // If there's an error, fall back to generating a new TCX
-          const tcx = generateTCX(activityDataRef.current);
-          downloadTCX(tcx, "bike-activity");
-        }
-      } else {
-        // If no file was selected, generate a new TCX
-        const tcx = generateTCX(activityDataRef.current);
-        downloadTCX(tcx, "bike-activity");
-      }
-    };
-
-    // Also handle the cancel case
-    fileInput.oncancel = () => {
-      const tcx = generateTCX(activityDataRef.current);
-      downloadTCX(tcx, "bike-activity");
-    };
-
-    fileInput.click();
-  }, []);
-
-  const handleBikeData = useCallback(
-    (data: BikeData) => {
-      if (isActive) {
-        activityDataRef.current.push({
-          timestamp: Date.now(),
-          power: data.instantaneousPower,
-          speed: data.speed,
-        });
-      }
-    },
-    [isActive]
-  );
+  const handleResumeActivity = useCallback(() => {
+    resumeActivity();
+  }, [resumeActivity]);
 
   return (
-    <Box width="100%" height="100%" p={4} bg="gray.900">
+    <Box width="100%" height="100vh" p={4} bg="bg.base">
       <Stack direction="column" gap={3} width="100%">
         <Stack direction="row" gap={3} width="100%" align="center">
-          <Controls
-            timeElapsed={isActive ? Date.now() - startTime : 0}
-            isActive={isActive}
-            onStartActivity={handleStartActivity}
-            onStopActivity={handleStopActivity}
-          />
+          <BikeControls />
         </Stack>
-        <Dashboard isActive={isActive} onData={handleBikeData} />
+        <Stack direction="row" gap={3} width="100%" align="center">
+          <Box width="1/3">
+            <ActivityControls
+              status={status}
+              timeElapsed={timeElapsed}
+              disabled={!isConnected}
+              onStartActivity={handleStartActivity}
+              onPauseActivity={handlePauseActivity}
+              onStopActivity={handleStopActivity}
+              onResumeActivity={handleResumeActivity}
+            />
+          </Box>
+          <Box width="2/3">
+            <CurrentStats data={currentData} />
+          </Box>
+        </Stack>
+        <Stack gap={4}>
+          <ActivityChart points={chartData.current} />
+        </Stack>
       </Stack>
     </Box>
   );
@@ -110,5 +103,4 @@ function App() {
     </BikeProvider>
   );
 }
-
 export default App;

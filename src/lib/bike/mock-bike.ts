@@ -39,9 +39,6 @@ class MockBike extends BikeInterface {
     this.emit("data", parseIndoorBikeData(data));
 
     this._currentIndex = (this._currentIndex + 1) % this._data.length;
-    if (this._currentIndex % 10 === 0) {
-      console.log(`Sent ${this._currentIndex} data points`);
-    }
   }
 
   async start(): Promise<void> {
