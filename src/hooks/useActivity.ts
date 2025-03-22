@@ -65,11 +65,9 @@ export const useActivity = () => {
         ? Math.floor(lastPoint.timestamp / 1000)
         : -1;
 
-      // Add to current second's data
       if (power !== undefined) currentSecondRef.current.power.push(power);
       if (speed !== undefined) currentSecondRef.current.speed.push(speed);
 
-      // If we've moved to a new second, save the averages
       if (currentSecond > lastSecond) {
         const avgPower = calculateAverage(currentSecondRef.current.power);
         const avgSpeed = calculateAverage(currentSecondRef.current.speed);
@@ -83,7 +81,6 @@ export const useActivity = () => {
           },
         ];
 
-        // Reset current second data
         currentSecondRef.current = { power: [], speed: [] };
       }
     },

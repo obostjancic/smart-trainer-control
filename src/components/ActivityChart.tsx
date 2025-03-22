@@ -18,7 +18,6 @@ interface ActivityChartProps {
 }
 
 export function ActivityChart({ points }: ActivityChartProps) {
-  // Get the last hour of data for display
   const displayData = points.slice(-3600);
 
   if (displayData.length === 0) {

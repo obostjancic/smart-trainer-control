@@ -18,7 +18,6 @@ const downloadTCX = (content: string, prefix: string) => {
 };
 
 export const mergeTCX = (activityPoints: ActivityPoint[]) => {
-  // Create file input and trigger click
   const fileInput = document.createElement("input");
   fileInput.type = "file";
   fileInput.accept = ".tcx";
@@ -33,18 +32,15 @@ export const mergeTCX = (activityPoints: ActivityPoint[]) => {
       } catch (error) {
         console.error("Error merging TCX files:", error);
         alert("Error merging TCX files. Please check the file format.");
-        // If there's an error, fall back to generating a new TCX
         const tcx = generateTCX(activityPoints);
         downloadTCX(tcx, "bike-activity");
       }
     } else {
-      // If no file was selected, generate a new TCX
       const tcx = generateTCX(activityPoints);
       downloadTCX(tcx, "bike-activity");
     }
   };
 
-  // Also handle the cancel case
   fileInput.oncancel = () => {
     const tcx = generateTCX(activityPoints);
     downloadTCX(tcx, "bike-activity");

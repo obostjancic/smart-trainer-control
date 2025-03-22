@@ -17,7 +17,6 @@ export const BikeControls = () => {
   const [resistance, setResistance] = useState(0);
   const [targetPower, setTargetPower] = useState(100);
 
-  // Keep track of the latest control change request
   const controlTimeoutRef = useRef<number | null>(null);
 
   const handleConnect = async () => {
@@ -30,12 +29,10 @@ export const BikeControls = () => {
 
   const handleControlChange = useCallback(
     async (control: keyof BikeControl, value: number) => {
-      // Clear any existing timeout
       if (controlTimeoutRef.current) {
         window.clearTimeout(controlTimeoutRef.current);
       }
 
-      // Set a new timeout
       controlTimeoutRef.current = window.setTimeout(async () => {
         await bikeBridge.sendControl(control, value);
       }, 100);
@@ -45,7 +42,6 @@ export const BikeControls = () => {
 
   useEffect(() => {
     return () => {
-      // Cleanup timeout on unmount
       if (controlTimeoutRef.current) {
         window.clearTimeout(controlTimeoutRef.current);
       }

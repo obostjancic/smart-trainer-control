@@ -25,13 +25,10 @@ class BikeBridge extends EventEmitter {
 
   async connect(useMock: boolean = false) {
     try {
-      // Cleanup any existing bike
       await this.disconnect();
 
-      // Create new bike instance
       this.bike = useMock ? new MockBike() : new BluetoothBike();
 
-      // Set up event listeners
       this.bike.on("data", (data: BikeData) => {
         this.emitToFrontend("bike-data", data);
       });
@@ -40,7 +37,6 @@ class BikeBridge extends EventEmitter {
         this.emitToFrontend("bike-error", error.message);
       });
 
-      // Start the bike
       await this.bike.start();
       this.emitToFrontend("bike-connect");
     } catch (error) {

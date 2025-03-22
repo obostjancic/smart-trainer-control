@@ -81,8 +81,6 @@ export function mergeTCXData(
     )?.[1];
 
     if (activityPoint) {
-      console.log("activityPoint", activityPoint);
-      // Add or update speed
       if (activityPoint.speed !== undefined) {
         let extensionsElement =
           trackpoint.getElementsByTagName("Extensions")[0];
@@ -108,7 +106,6 @@ export function mergeTCXData(
         speedElement.textContent = (activityPoint.speed / 3.6).toFixed(2);
       }
 
-      // Add or update power
       if (activityPoint.power !== undefined) {
         let extensionsElement =
           trackpoint.getElementsByTagName("Extensions")[0];
@@ -181,8 +178,6 @@ function aggregateActivityPoints(
 }
 
 export function generateTCX(activityPoints: ActivityPoint[]): string {
-  // Group points by second and calculate averages
-
   const averagedPoints = aggregateActivityPoints(activityPoints);
 
   const formatDate = (timestamp: number) => {

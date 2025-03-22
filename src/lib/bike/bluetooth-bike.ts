@@ -2,8 +2,6 @@ import BikeInterface, { BikeControl } from "./bike-interface";
 import { parseIndoorBikeData } from "./ftms";
 import { FTMSControlResponseCode, getControlPointOpCode } from "./ftms-control";
 
-// Error: Failed to execute 'getCharacteristic' on 'BluetoothRemoteGATTService': Invalid Characteristic name: '2ad2'. It must be a valid UUID alias (e.g. 0x1234), UUID (lowercase hex characters e.g. '00001234-0000-1000-8000-00805f9b34fb'), or recognized standard name from https://www.bluetooth.com/specifications/gatt/characteristics e.g. 'aerobic_heart_rate_lower_limit'.
-
 // Standard Fitness Machine Characteristics names
 const CHARACTERISTICS = {
   FEATURE: "fitness_machine_feature",
@@ -108,16 +106,13 @@ class BluetoothBike extends BikeInterface {
     if (this._isRunning) return;
 
     try {
-      // Request the device
       this._device = await navigator.bluetooth.requestDevice({
         filters: [{ services: [FITNESS_MACHINE_SERVICE] }],
       });
 
-      // Connect to GATT server
       this._server = await this._device.gatt?.connect();
       if (!this._server) throw new Error("Could not connect to GATT server");
 
-      // Get the fitness machine service
       this._service = await this._server.getPrimaryService(
         FITNESS_MACHINE_SERVICE
       );

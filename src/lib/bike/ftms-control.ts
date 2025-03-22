@@ -52,7 +52,6 @@ export function createControlPointData(
   return new Uint8Array([opCode, ...parameters]);
 }
 
-// Helper functions for specific commands
 export function createSetTargetPowerData(targetPower: number): Uint8Array {
   // Target power is in watts, sent as sint16
   const powerBytes = new Int16Array([targetPower]);
