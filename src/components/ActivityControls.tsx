@@ -8,7 +8,7 @@ import { ActivityStatus } from "@/hooks/useActivity";
 
 interface ActivityControlsProps {
   status: ActivityStatus;
-  timeElapsed: number;
+  duration: number;
   disabled?: boolean;
   onStartActivity: () => void;
   onPauseActivity: () => void;
@@ -18,7 +18,7 @@ interface ActivityControlsProps {
 
 export function ActivityControls({
   status,
-  timeElapsed,
+  duration,
   disabled,
   onStartActivity,
   onPauseActivity,
@@ -34,7 +34,7 @@ export function ActivityControls({
         <Stack direction="column" gap={4} align="center">
           <Stack direction="column" gap={1} align="center">
             <Text size="5xl" fontWeight="semibold">
-              {formatTime(timeElapsed)}
+              {formatTime(duration)}
             </Text>
           </Stack>
           {status === ActivityStatus.NotStarted ? (

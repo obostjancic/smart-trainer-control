@@ -6,26 +6,31 @@ import { BikeControls } from "./components/BikeControls";
 import { BikeProvider, useBike } from "./components/BikeProvider";
 import { CurrentStats } from "./components/CurrentStats";
 import {
+  Activity,
   ActivityPoint,
   ActivityStatus,
   useActivity,
 } from "./hooks/useActivity";
 import { BikeData } from "./lib/bike/types";
-import { mergeTCX } from "./utils/file";
+import { ActivityEndDialog } from "./components/ActivityEndDialog";
+import { useDialog } from "./hooks/useDialog";
 
-function AppContent() {
+function AppContent({
+  onStopActivity,
+}: {
+  onStopActivity: (activity: Activity) => void;
+}) {
   const {
-    status,
     addActivityPoint,
-    getActivityPoints,
     startActivity,
     pauseActivity,
     resumeActivity,
     stopActivity,
-    timeElapsed,
+    getActivity,
   } = useActivity();
   const { isConnected } = useBike();
 
+  const activity = getActivity();
   const [currentData, setCurrentData] = useState<BikeData>({});
   const chartData = useRef<ActivityPoint[]>([]);
 
@@ -35,9 +40,9 @@ function AppContent() {
         const data = event.data.payload as BikeData;
         setCurrentData(data);
         addActivityPoint(data.instantaneousPower, data.speed);
-        if (status === ActivityStatus.Running)
+        if (activity.status === ActivityStatus.Running)
           chartData.current.push({
-            timestamp: timeElapsed,
+            timestamp: activity.duration,
             power: data.instantaneousPower,
             speed: data.speed,
           });
@@ -46,7 +51,7 @@ function AppContent() {
 
     window.addEventListener("message", handleBikeData);
     return () => window.removeEventListener("message", handleBikeData);
-  }, [addActivityPoint, getActivityPoints, status, timeElapsed]);
+  }, [addActivityPoint, getActivity, activity.status, activity.duration]);
 
   const handleStartActivity = useCallback(() => {
     chartData.current = [];
@@ -59,8 +64,8 @@ function AppContent() {
 
   const handleStopActivity = useCallback(async () => {
     stopActivity();
-    mergeTCX(getActivityPoints());
-  }, [stopActivity, getActivityPoints]);
+    onStopActivity(activity);
+  }, [stopActivity, onStopActivity, activity]);
 
   const handleResumeActivity = useCallback(() => {
     resumeActivity();
@@ -75,8 +80,8 @@ function AppContent() {
         <Stack direction="row" gap={3} width="100%" align="center">
           <Box width="1/3">
             <ActivityControls
-              status={status}
-              timeElapsed={timeElapsed}
+              status={activity.status}
+              duration={activity.duration}
               disabled={!isConnected}
               onStartActivity={handleStartActivity}
               onPauseActivity={handlePauseActivity}
@@ -97,9 +102,21 @@ function AppContent() {
 }
 
 function App() {
+  const { dialogProps, openDialog } = useDialog();
+  const [activity, setActivity] = useState<Activity | null>(null);
+
+  const handleStopActivity = useCallback(
+    (activity: Activity) => {
+      setActivity(activity);
+      openDialog();
+    },
+    [openDialog]
+  );
+
   return (
     <BikeProvider>
-      <AppContent />
+      <AppContent onStopActivity={handleStopActivity} />
+      <ActivityEndDialog {...dialogProps} activity={activity} />
     </BikeProvider>
   );
 }

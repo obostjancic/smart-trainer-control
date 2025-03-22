@@ -1,4 +1,11 @@
+import { avg } from "@/utils/math";
 import { useState, useEffect, useCallback, useRef } from "react";
+
+export interface Activity {
+  duration: number;
+  points: ActivityPoint[];
+  status: ActivityStatus;
+}
 
 export interface ActivityPoint {
   timestamp: number;
@@ -16,11 +23,6 @@ interface SecondData {
   power: number[];
   speed: number[];
 }
-
-const calculateAverage = (values: number[]): number | undefined => {
-  if (values.length === 0) return undefined;
-  return values.reduce((a, b) => a + b, 0) / values.length;
-};
 
 export const useActivity = () => {
   const [status, setStatus] = useState<ActivityStatus>(
@@ -69,8 +71,8 @@ export const useActivity = () => {
       if (speed !== undefined) currentSecondRef.current.speed.push(speed);
 
       if (currentSecond > lastSecond) {
-        const avgPower = calculateAverage(currentSecondRef.current.power);
-        const avgSpeed = calculateAverage(currentSecondRef.current.speed);
+        const avgPower = avg(currentSecondRef.current.power);
+        const avgSpeed = avg(currentSecondRef.current.speed);
 
         activityPointsRef.current = [
           ...activityPointsRef.current,
@@ -87,10 +89,6 @@ export const useActivity = () => {
     [status]
   );
 
-  const getActivityPoints = useCallback(() => {
-    return activityPointsRef.current;
-  }, []);
-
   useEffect(() => {
     if (status === ActivityStatus.Running) {
       intervalRef.current = window.setInterval(() => {
@@ -105,11 +103,17 @@ export const useActivity = () => {
     };
   }, [status]);
 
+  const getActivity = useCallback(() => {
+    return {
+      duration: timeElapsed,
+      points: activityPointsRef.current,
+      status,
+    };
+  }, [timeElapsed, status]);
+
   return {
-    status,
-    timeElapsed,
+    getActivity,
     addActivityPoint,
-    getActivityPoints,
     startActivity,
     stopActivity,
     pauseActivity,

@@ -1,5 +1,7 @@
 import { ActivityPoint } from "@/hooks/useActivity";
 import { generateTCX, mergeTCXData } from "@/lib/tcx";
+
+
 const downloadFile = (content: string, filename: string, mimeType: string) => {
   const blob = new Blob([content], { type: mimeType });
   const url = URL.createObjectURL(blob);
