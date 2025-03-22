@@ -17,6 +17,7 @@
   "dependencies": {
     "@ark-ui/react": "^5.0.1",
     "events": "^3.3.0",
+    "fit-file-parser": "^1.21.0",
     "lucide-react": "^0.483.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

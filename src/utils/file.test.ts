@@ -1,11 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mergeTCX } from "./file";
-import { generateTCX, mergeTCXData } from "@/lib/tcx";
+import { generateTCX, tcxFormat } from "@/lib/file/tcx";
 
 // Mock the TCX functions
 vi.mock("@/lib/tcx", () => ({
   generateTCX: vi.fn(),
-  mergeTCXData: vi.fn(),
+  tcxFormat: {
+    merge: vi.fn(),
+    parse: vi.fn(),
+  },
 }));
 
 describe("file utils", () => {
@@ -41,7 +44,7 @@ describe("file utils", () => {
       (generateTCX as unknown as ReturnType<typeof vi.fn>).mockReturnValue(
         "generated-tcx"
       );
-      (mergeTCXData as unknown as ReturnType<typeof vi.fn>).mockReturnValue(
+      (tcxFormat.merge as unknown as ReturnType<typeof vi.fn>).mockReturnValue(
         "merged-tcx"
       );
     });
@@ -60,7 +63,7 @@ describe("file utils", () => {
       // Simulate file selection
       mockFileInput.onchange?.();
       await vi.waitFor(() => {
-        expect(mergeTCXData).toHaveBeenCalledWith(
+        expect(tcxFormat.merge).toHaveBeenCalledWith(
           "existing-tcx",
           mockActivityPoints
         );
@@ -81,11 +84,11 @@ describe("file utils", () => {
         text: vi.fn().mockResolvedValue("existing-tcx"),
       } as unknown as File;
       mockFileInput.files = [mockFile] as unknown as FileList;
-      (mergeTCXData as unknown as ReturnType<typeof vi.fn>).mockImplementation(
-        () => {
-          throw new Error("Merge failed");
-        }
-      );
+      (
+        tcxFormat.merge as unknown as ReturnType<typeof vi.fn>
+      ).mockImplementation(() => {
+        throw new Error("Merge failed");
+      });
 
       const consoleSpy = vi
         .spyOn(console, "error")

@@ -1,6 +1,5 @@
 import { ActivityPoint } from "@/hooks/useActivity";
-import { generateTCX, mergeTCXData } from "@/lib/tcx";
-
+import { generateTCX, tcxFormat } from "@/lib/file/tcx";
 
 const downloadFile = (content: string, filename: string, mimeType: string) => {
   const blob = new Blob([content], { type: mimeType });
@@ -29,8 +28,8 @@ export const mergeTCX = (activityPoints: ActivityPoint[]) => {
     if (file) {
       try {
         const existingTCX = await file.text();
-        const mergedTCX = mergeTCXData(existingTCX, activityPoints);
-        downloadTCX(mergedTCX, "merged-activity");
+        const mergedTCX = await tcxFormat.merge(existingTCX, activityPoints);
+        downloadTCX(mergedTCX.toString(), "merged-activity");
       } catch (error) {
         console.error("Error merging TCX files:", error);
         alert("Error merging TCX files. Please check the file format.");
