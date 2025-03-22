@@ -3,34 +3,25 @@ import { Box, Stack } from "styled-system/jsx";
 import { ActivityChart } from "./components/ActivityChart";
 import { ActivityControls } from "./components/ActivityControls";
 import { BikeControls } from "./components/BikeControls";
-import { BikeProvider, useBike } from "./components/BikeProvider";
+import { BikeProvider } from "./components/BikeProvider";
 import { CurrentStats } from "./components/CurrentStats";
-import {
-  Activity,
-  ActivityPoint,
-  ActivityStatus,
-  useActivity,
-} from "./hooks/useActivity";
-import { BikeData } from "./lib/bike/types";
 import { ActivityEndDialog } from "./components/ActivityEndDialog";
-import { useDialog } from "./hooks/useDialog";
+import { ActivityProvider, useActivity } from "./contexts/ActivityContext";
+import { ActivityPoint, ActivityStatus } from "./hooks/useActivity";
+import { BikeData } from "./lib/bike/types";
+import { useBike } from "./components/BikeProvider";
 
-function AppContent({
-  onStopActivity,
-}: {
-  onStopActivity: (activity: Activity) => void;
-}) {
+function AppContent() {
   const {
+    activity,
     addActivityPoint,
     startActivity,
     pauseActivity,
     resumeActivity,
     stopActivity,
-    getActivity,
+    resetActivity,
   } = useActivity();
   const { isConnected } = useBike();
-
-  const activity = getActivity();
   const [currentData, setCurrentData] = useState<BikeData>({});
   const chartData = useRef<ActivityPoint[]>([]);
 
@@ -39,7 +30,7 @@ function AppContent({
       if (event.data.type === "bike-data") {
         const data = event.data.payload as BikeData;
         setCurrentData(data);
-        addActivityPoint(data.instantaneousPower, data.speed);
+        addActivityPoint(data.instantaneousPower ?? null, data.speed ?? null);
         if (activity.status === ActivityStatus.Running)
           chartData.current.push({
             timestamp: activity.duration,
@@ -51,10 +42,9 @@ function AppContent({
 
     window.addEventListener("message", handleBikeData);
     return () => window.removeEventListener("message", handleBikeData);
-  }, [addActivityPoint, getActivity, activity.status, activity.duration]);
+  }, [addActivityPoint, activity.status, activity.duration]);
 
   const handleStartActivity = useCallback(() => {
-    chartData.current = [];
     startActivity();
   }, [startActivity]);
 
@@ -64,60 +54,58 @@ function AppContent({
 
   const handleStopActivity = useCallback(async () => {
     stopActivity();
-    onStopActivity(activity);
-  }, [stopActivity, onStopActivity, activity]);
+  }, [stopActivity]);
 
   const handleResumeActivity = useCallback(() => {
     resumeActivity();
   }, [resumeActivity]);
 
+  const handleResetActivity = useCallback(() => {
+    chartData.current = [];
+    resetActivity();
+  }, [resetActivity]);
+
   return (
-    <Box width="100%" height="100vh" p={4} bg="bg.base">
-      <Stack direction="column" gap={3} width="100%">
-        <Stack direction="row" gap={3} width="100%" align="center">
-          <BikeControls />
-        </Stack>
-        <Stack direction="row" gap={3} width="100%" align="center">
+    <Box p="4">
+      <Stack gap="8">
+        <BikeControls />
+        <Stack direction="row" gap="8" width="100%">
           <Box width="1/3">
             <ActivityControls
+              disabled={!isConnected}
               status={activity.status}
               duration={activity.duration}
-              disabled={!isConnected}
               onStartActivity={handleStartActivity}
               onPauseActivity={handlePauseActivity}
-              onStopActivity={handleStopActivity}
               onResumeActivity={handleResumeActivity}
+              onStopActivity={handleStopActivity}
             />
           </Box>
           <Box width="2/3">
             <CurrentStats data={currentData} />
           </Box>
         </Stack>
-        <Stack gap={4}>
-          <ActivityChart points={chartData.current} />
-        </Stack>
+        <ActivityChart points={chartData.current} />
       </Stack>
+      <ActivityEndDialog
+        onOpenChange={(details) => {
+          if (!details.open) {
+            handleResetActivity();
+          }
+        }}
+      />
     </Box>
   );
 }
 
 function App() {
-  const { dialogProps, openDialog } = useDialog();
-  const [activity, setActivity] = useState<Activity | null>(null);
-
-  const handleStopActivity = useCallback(
-    (activity: Activity) => {
-      setActivity(activity);
-      openDialog();
-    },
-    [openDialog]
-  );
-
   return (
     <BikeProvider>
-      <AppContent onStopActivity={handleStopActivity} />
-      <ActivityEndDialog {...dialogProps} activity={activity} />
+      <ActivityProvider>
+        <AppContent />
+      </ActivityProvider>
     </BikeProvider>
   );
 }
+
 export default App;

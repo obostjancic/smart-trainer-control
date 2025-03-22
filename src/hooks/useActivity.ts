@@ -17,6 +17,7 @@ export enum ActivityStatus {
   NotStarted = "not_started",
   Running = "running",
   Paused = "paused",
+  Stopped = "stopped",
 }
 
 interface SecondData {
@@ -35,13 +36,10 @@ export const useActivity = () => {
 
   const startActivity = useCallback(() => {
     setStatus(ActivityStatus.Running);
-    setTimeElapsed(0);
-    activityPointsRef.current = [];
-    currentSecondRef.current = { power: [], speed: [] };
   }, []);
 
   const stopActivity = useCallback(() => {
-    setStatus(ActivityStatus.NotStarted);
+    setStatus(ActivityStatus.Stopped);
     if (intervalRef.current) {
       window.clearInterval(intervalRef.current);
     }
@@ -53,6 +51,13 @@ export const useActivity = () => {
 
   const pauseActivity = useCallback(() => {
     setStatus(ActivityStatus.Paused);
+  }, []);
+
+  const resetActivity = useCallback(() => {
+    setStatus(ActivityStatus.NotStarted);
+    setTimeElapsed(0);
+    activityPointsRef.current = [];
+    currentSecondRef.current = { power: [], speed: [] };
   }, []);
 
   const addActivityPoint = useCallback(
@@ -118,5 +123,6 @@ export const useActivity = () => {
     stopActivity,
     pauseActivity,
     resumeActivity,
+    resetActivity,
   };
 };

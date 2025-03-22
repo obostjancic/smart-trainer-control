@@ -1,4 +1,7 @@
-export const formatTime = (ms: number = 0, format?: "HH:MM:SS" | "MM:SS") => {
+export const formatDuration = (
+  ms: number = 0,
+  format?: "HH:MM:SS" | "MM:SS"
+) => {
   const seconds = Math.floor(ms / 1000);
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);

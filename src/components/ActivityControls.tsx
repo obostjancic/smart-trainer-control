@@ -2,7 +2,7 @@ import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { Stack } from "styled-system/jsx";
 import { PlayIcon, Square, PauseIcon } from "lucide-react";
-import { formatTime } from "../utils/time";
+import { formatDuration } from "../utils/time";
 import { Text } from "./ui/text";
 import { ActivityStatus } from "@/hooks/useActivity";
 
@@ -34,7 +34,7 @@ export function ActivityControls({
         <Stack direction="column" gap={4} align="center">
           <Stack direction="column" gap={1} align="center">
             <Text size="5xl" fontWeight="semibold">
-              {formatTime(duration)}
+              {formatDuration(duration)}
             </Text>
           </Stack>
           {status === ActivityStatus.NotStarted ? (

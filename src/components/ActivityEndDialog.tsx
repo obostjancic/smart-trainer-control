@@ -1,15 +1,17 @@
 import { Activity } from "@/hooks/useActivity";
 import { mergeTCX } from "@/utils/file";
 import { avg } from "@/utils/math";
-import { formatTime } from "@/utils/time";
-import { DownloadIcon, UploadIcon, WatchIcon } from "lucide-react";
+import { formatDuration } from "@/utils/time";
+import { DownloadIcon, UploadIcon, WatchIcon, XIcon } from "lucide-react";
 import { Stack } from "styled-system/jsx";
 import { Button } from "./ui/button";
 import { Dialog } from "./ui/dialog";
 import type { RootProps } from "./ui/styled/dialog";
 import { Text } from "./ui/text";
+import { ActivityStatus } from "@/hooks/useActivity";
+import { useActivity } from "@/contexts/ActivityContext";
 
-type ActivityEndDialogProps = RootProps & { activity: Activity | null };
+type ActivityEndDialogProps = RootProps;
 
 function ActivityStats({ activity }: { activity: Activity }) {
   const avgPower = avg(activity.points.map((point) => point.power ?? 0));
@@ -19,7 +21,7 @@ function ActivityStats({ activity }: { activity: Activity }) {
     <Stack gap="4" p="4" bg="gray.100" rounded="md">
       <Stack direction="row" justify="space-between">
         <Text>Duration</Text>
-        <Text fontWeight="bold">{formatTime(activity.duration)}</Text>
+        <Text fontWeight="bold">{formatDuration(activity.duration)}</Text>
       </Stack>
       <Stack direction="row" justify="space-between">
         <Text>Average Power</Text>
@@ -53,25 +55,49 @@ function ActivityActions({ onMerge }: { onMerge: () => void }) {
 }
 
 export function ActivityEndDialog(props: ActivityEndDialogProps) {
+  const { resetActivity, activity } = useActivity();
   const handleMerge = async () => {
-    await mergeTCX(props.activity?.points ?? []);
+    await mergeTCX(activity.points);
   };
 
-  if (!props.activity) return null;
+  const handleOpenChange = (details: { open: boolean }) => {
+    if (!details.open) {
+      resetActivity();
+    }
+    props.onOpenChange?.(details);
+  };
+
+  if (!activity.points.length) return null;
 
   return (
-    <Dialog.Root {...props}>
+    <Dialog.Root
+      {...props}
+      open={
+        activity.status === ActivityStatus.NotStarted &&
+        activity.points.length > 0
+      }
+      onOpenChange={handleOpenChange}
+    >
       <Dialog.Backdrop />
       <Dialog.Positioner>
         <Dialog.Content>
           <Stack gap="8" p="6">
-            <Stack gap="1">
+            <Stack gap="1" position="relative">
               <Dialog.Title>Activity Complete</Dialog.Title>
-              <Dialog.Description>
-                Here's a summary of your activity
-              </Dialog.Description>
+              <Button
+                position="absolute"
+                top="0"
+                right="0"
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  handleOpenChange({ open: false });
+                }}
+              >
+                <XIcon />
+              </Button>
             </Stack>
-            <ActivityStats activity={props.activity} />
+            <ActivityStats activity={activity} />
             <ActivityActions onMerge={handleMerge} />
           </Stack>
         </Dialog.Content>

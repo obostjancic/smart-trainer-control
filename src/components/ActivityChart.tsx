@@ -1,4 +1,4 @@
-import { formatTime } from "@/utils/time";
+import { formatDuration } from "@/utils/time";
 import {
   CartesianGrid,
   Line,
@@ -60,7 +60,7 @@ export function ActivityChart({ points }: ActivityChartProps) {
 
             <XAxis
               dataKey="timestamp"
-              tickFormatter={(value) => formatTime(value, "MM:SS")}
+              tickFormatter={(value) => formatDuration(value, "MM:SS")}
               minTickGap={100}
             />
             <YAxis
@@ -74,7 +74,7 @@ export function ActivityChart({ points }: ActivityChartProps) {
               domain={[0, "auto"]}
               tickFormatter={(value) => `${value.toFixed(0)} km/h`}
             />
-            <Tooltip labelFormatter={(value) => formatTime(value)} />
+            <Tooltip labelFormatter={(value) => formatDuration(value)} />
             <Line
               yAxisId="power"
               type="monotone"
