@@ -55,7 +55,10 @@ export const BikeControls = () => {
           <Card.Title>Bike Controls</Card.Title>
         </Card.Header>
         <Card.Body>
-          <Stack direction="row" gap={16}>
+          <Stack
+            direction={{ base: "column", md: "row" }}
+            gap={{ base: 4, md: 16 }}
+          >
             <Stack direction="column" gap={8}>
               <Button
                 onClick={isConnected ? handleDisconnect : handleConnect}

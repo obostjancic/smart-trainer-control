@@ -15,17 +15,7 @@ export default defineConfig({
 
   // Useful for theme customization
   theme: {
-    extend: {
-      semanticTokens: {
-        colors: {
-          bg: {
-            base: {
-              value: { base: "{colors.white}", _dark: "{colors.gray.900}" },
-            },
-          },
-        },
-      },
-    },
+    extend: {},
   },
   presets: [
     "@pandacss/preset-base",

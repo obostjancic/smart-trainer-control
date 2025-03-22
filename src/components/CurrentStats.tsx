@@ -1,8 +1,8 @@
-import { Box, Stack } from "styled-system/jsx";
+import { useEffect, useState } from "react";
+import { Stack } from "styled-system/jsx";
 import { BikeData } from "../lib/bike/types";
 import { Card } from "./ui/card";
 import { Text } from "./ui/text";
-import { useEffect, useState } from "react";
 
 interface CurrentStatsProps {
   data?: BikeData;
@@ -23,41 +23,36 @@ export function CurrentStats({ data }: CurrentStatsProps) {
         <Card.Title>Instantaneous</Card.Title>
       </Card.Header>
       <Card.Body>
-        <Stack direction="row" gap={16} justify="center">
-          <Box>
-            <Text size="2xl"> Power</Text>
-            <Stack direction="row" gap={2} align="baseline">
-              <Text
-                size="7xl"
-                fontWeight="semibold"
-                color="#b658c4"
-                minWidth="2em"
-                textAlign="right"
-              >
-                {data?.instantaneousPower || 0}
-              </Text>
-              <Text size="2xl">W</Text>
-            </Stack>
-          </Box>
-          <Box>
-            <Text size="2xl"> Speed</Text>
-            <Stack direction="row" gap={2} align="baseline">
-              <Text
-                size="7xl"
-                fontWeight="semibold"
-                color="#46a758"
-                minWidth="2em"
-                textAlign="right"
-                style={{
-                  transition: "all 0.3s ease-out",
-                  display: "inline-block",
-                }}
-              >
-                {displaySpeed.toFixed(1)}
-              </Text>
-              <Text size="2xl">km/h</Text>
-            </Stack>
-          </Box>
+        <Stack direction="row" gap={16} py={6} justify="center">
+          <Stack direction="row" gap={2} align="baseline">
+            <Text
+              size="6xl"
+              fontWeight="semibold"
+              color="#b658c4"
+              minWidth="1.5em"
+              textAlign="right"
+            >
+              {data?.instantaneousPower || 0}
+            </Text>
+            <Text size="2xl">W</Text>
+          </Stack>
+
+          <Stack direction="row" gap={2} align="baseline">
+            <Text
+              size="6xl"
+              fontWeight="semibold"
+              color="#46a758"
+              minWidth="1.5em"
+              textAlign="right"
+              style={{
+                transition: "all 0.3s ease-out",
+                display: "inline-block",
+              }}
+            >
+              {displaySpeed.toFixed(1)}
+            </Text>
+            <Text size="2xl">km/h</Text>
+          </Stack>
         </Stack>
       </Card.Body>
     </Card.Root>

@@ -31,8 +31,8 @@ export function ActivityControls({
         <Card.Title>Activity Controls</Card.Title>
       </Card.Header>
       <Card.Body>
-        <Stack direction="column" gap={4} align="center">
-          <Stack direction="column" gap={1} align="center">
+        <Stack direction="column" gap={5} align="center">
+          <Stack direction="column" align="center">
             <Text size="5xl" fontWeight="semibold">
               {formatDuration(duration)}
             </Text>

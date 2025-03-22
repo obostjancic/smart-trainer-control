@@ -67,10 +67,15 @@ function AppContent() {
 
   return (
     <Box p="4">
-      <Stack gap="8">
+      <Stack gap="2">
         <BikeControls />
-        <Stack direction="row" gap="8" width="100%">
-          <Box width="1/3">
+        <Stack
+          direction={{ base: "column", md: "row" }}
+          gap="2"
+          width="100%"
+          alignItems="center"
+        >
+          <Box width={{ base: "100%", md: "1/3" }}>
             <ActivityControls
               disabled={!isConnected}
               status={activity.status}
@@ -81,7 +86,7 @@ function AppContent() {
               onStopActivity={handleStopActivity}
             />
           </Box>
-          <Box width="2/3">
+          <Box width={{ base: "100%", md: "2/3" }}>
             <CurrentStats data={currentData} />
           </Box>
         </Stack>
