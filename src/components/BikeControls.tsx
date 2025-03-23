@@ -13,7 +13,7 @@ const isDev = process.env.NODE_ENV === "development";
 
 export const BikeControls = () => {
   const { isConnected } = useBike();
-  const [useMock, setUseMock] = useState(true);
+  const [useMock, setUseMock] = useState(false);
   const [resistance, setResistance] = useState(0);
   const [targetPower, setTargetPower] = useState(100);
 
