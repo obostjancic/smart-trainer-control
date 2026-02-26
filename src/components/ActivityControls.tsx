@@ -130,8 +130,8 @@ export function ActivityControls({
       position={{ base: "sticky", md: "relative" }}
       top={{ base: "0", md: "auto" }}
       zIndex={{ base: 10, md: "auto" }}
-      py={{ base: 2, md: 0 }}
-      pb={{ base: 2, md: 0 }}
+      py={2}
+      pb={2}
       px={{ base: 0, md: 0 }}
       style={{
         backgroundColor: "var(--color-bg)",
