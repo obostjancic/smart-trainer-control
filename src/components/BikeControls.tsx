@@ -1,6 +1,6 @@
 import { bikeBridge, initializeBike } from "@/lib/bike";
 import { BikeControl } from "@/lib/bike/bike-interface";
-import { Bluetooth, Minus, Plus } from "lucide-react";
+import { Bluetooth, Loader2, Minus, Plus } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Stack } from "styled-system/jsx";
 import { useBike } from "./BikeProvider";
@@ -39,13 +39,19 @@ const controlBtnStyle = css({
 export const BikeControls = () => {
   const { isConnected } = useBike();
   const [useMock, setUseMock] = useState(false);
+  const [connecting, setConnecting] = useState(false);
   const [resistance, setResistance] = useState(0);
   const [targetPower, setTargetPower] = useState(100);
 
   const controlTimeoutRef = useRef<number | null>(null);
 
   const handleConnect = async () => {
-    await initializeBike(useMock);
+    setConnecting(true);
+    try {
+      await initializeBike(useMock);
+    } finally {
+      setConnecting(false);
+    }
   };
 
   const handleControlChange = useCallback(
@@ -94,6 +100,7 @@ export const BikeControls = () => {
         </Stack>
         <button
           onClick={handleConnect}
+          disabled={connecting}
           className={css({
             display: "flex",
             alignItems: "center",
@@ -112,10 +119,19 @@ export const BikeControls = () => {
               opacity: 0.9,
               transform: "translateY(-1px)",
             },
+            _disabled: {
+              opacity: 0.7,
+              cursor: "wait",
+              transform: "none",
+            },
           })}
         >
-          <Bluetooth size={22} />
-          Connect Bike
+          {connecting ? (
+            <Loader2 size={22} className={css({ animation: "spin 1s linear infinite" })} />
+          ) : (
+            <Bluetooth size={22} />
+          )}
+          {connecting ? "Connecting..." : "Connect Bike"}
         </button>
         {isDev && (
           <Checkbox

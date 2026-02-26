@@ -143,10 +143,33 @@ export function ActivitySummary({
 
         {/* Actions */}
         <Stack gap={3} direction={{ base: "column", md: "row" }}>
-          <Button flex={1} onClick={handleDownload}>
+          <button
+            onClick={handleDownload}
+            className={css({
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "2",
+              flex: 1,
+              height: "48px",
+              fontSize: "md",
+              fontWeight: "600",
+              fontFamily: "var(--font-body)",
+              background: "var(--color-power)",
+              color: "#0a0a0f",
+              border: "none",
+              borderRadius: "lg",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              _hover: {
+                opacity: 0.9,
+                transform: "translateY(-1px)",
+              },
+            })}
+          >
             <DownloadIcon size={18} />
             Download TCX
-          </Button>
+          </button>
           <Button flex={1} variant="outline" onClick={handleMerge}>
             <UploadIcon size={18} />
             Merge with Existing
