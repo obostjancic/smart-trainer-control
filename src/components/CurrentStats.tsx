@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Stack } from "styled-system/jsx";
 import { BikeData } from "../lib/bike/types";
-import { Card } from "./ui/card";
 import { Text } from "./ui/text";
 
 interface CurrentStatsProps {
@@ -18,43 +17,49 @@ export function CurrentStats({ data }: CurrentStatsProps) {
   }, [data?.speed]);
 
   return (
-    <Card.Root>
-      <Card.Header>
-        <Card.Title>Instantaneous</Card.Title>
-      </Card.Header>
-      <Card.Body>
-        <Stack direction="row" gap={16} py={6} justify="center">
-          <Stack direction="row" gap={2} align="baseline">
-            <Text
-              size="6xl"
-              fontWeight="semibold"
-              color="#b658c4"
-              minWidth="1.5em"
-              textAlign="right"
-            >
-              {data?.instantaneousPower || 0}
-            </Text>
-            <Text size="2xl">W</Text>
-          </Stack>
-
-          <Stack direction="row" gap={2} align="baseline">
-            <Text
-              size="6xl"
-              fontWeight="semibold"
-              color="#46a758"
-              minWidth="1.5em"
-              textAlign="right"
-              style={{
-                transition: "all 0.3s ease-out",
-                display: "inline-block",
-              }}
-            >
-              {displaySpeed.toFixed(1)}
-            </Text>
-            <Text size="2xl">km/h</Text>
-          </Stack>
-        </Stack>
-      </Card.Body>
-    </Card.Root>
+    <Stack gap={1} align="center" py={{ base: 4, md: 6 }} className="animate-fade-in-up">
+      <Stack direction="row" gap={2} align="baseline" justify="center">
+        <Text
+          fontSize={{ base: "7xl", md: "8xl" }}
+          fontWeight="bold"
+          lineHeight="1"
+          fontVariantNumeric="tabular-nums"
+          style={{
+            color: "var(--color-power)",
+            textShadow: "var(--glow-power)",
+            transition: "text-shadow 0.3s ease",
+          }}
+        >
+          {data?.instantaneousPower || 0}
+        </Text>
+        <Text
+          fontSize={{ base: "2xl", md: "3xl" }}
+          style={{ color: "var(--color-text-muted)" }}
+        >
+          W
+        </Text>
+      </Stack>
+      <Stack direction="row" gap={2} align="baseline" justify="center">
+        <Text
+          fontSize={{ base: "4xl", md: "5xl" }}
+          fontWeight="semibold"
+          lineHeight="1"
+          fontVariantNumeric="tabular-nums"
+          style={{
+            color: "var(--color-speed)",
+            textShadow: "var(--glow-speed)",
+            transition: "all 0.3s ease-out",
+          }}
+        >
+          {displaySpeed.toFixed(1)}
+        </Text>
+        <Text
+          fontSize={{ base: "xl", md: "2xl" }}
+          style={{ color: "var(--color-text-muted)" }}
+        >
+          km/h
+        </Text>
+      </Stack>
+    </Stack>
   );
 }

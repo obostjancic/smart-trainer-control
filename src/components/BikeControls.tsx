@@ -1,15 +1,40 @@
 import { bikeBridge, initializeBike } from "@/lib/bike";
 import { BikeControl } from "@/lib/bike/bike-interface";
-import { Bluetooth, BluetoothOff } from "lucide-react";
+import { Bluetooth, Minus, Plus } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Stack } from "styled-system/jsx";
 import { useBike } from "./BikeProvider";
-import { Button } from "./ui/button";
-import { Card } from "./ui/card";
 import { Checkbox } from "./ui/checkbox";
-import { Slider } from "./ui/slider";
+import { Text } from "./ui/text";
+import { css } from "styled-system/css";
 
 const isDev = process.env.NODE_ENV === "development";
+
+const controlBtnStyle = css({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "1",
+  border: "1px solid var(--color-btn-border)",
+  background: "var(--color-btn-bg)",
+  color: "var(--color-text)",
+  borderRadius: "lg",
+  cursor: "pointer",
+  fontFamily: "var(--font-body)",
+  fontWeight: "600",
+  transition: "all 0.15s ease",
+  _hover: {
+    background: "var(--color-btn-hover)",
+  },
+  _active: {
+    transform: "scale(0.95)",
+  },
+  _disabled: {
+    opacity: 0.3,
+    cursor: "not-allowed",
+    transform: "none",
+  },
+});
 
 export const BikeControls = () => {
   const { isConnected } = useBike();
@@ -21,10 +46,6 @@ export const BikeControls = () => {
 
   const handleConnect = async () => {
     await initializeBike(useMock);
-  };
-
-  const handleDisconnect = async () => {
-    await bikeBridge.disconnect();
   };
 
   const handleControlChange = useCallback(
@@ -48,86 +69,171 @@ export const BikeControls = () => {
     };
   }, []);
 
-  return (
-    <Stack direction="row" gap={4} width="100%">
-      <Card.Root flex={1}>
-        <Card.Header>
-          <Card.Title>Bike Controls</Card.Title>
-        </Card.Header>
-        <Card.Body>
-          <Stack
-            direction={{ base: "column", md: "row" }}
-            gap={{ base: 4, md: 16 }}
-          >
-            <Stack direction="column" gap={8}>
-              <Button
-                onClick={isConnected ? handleDisconnect : handleConnect}
-                colorPalette={isConnected ? "red" : undefined}
-                variant={isConnected ? "outline" : "solid"}
-              >
-                {isConnected ? <BluetoothOff /> : <Bluetooth />}
-                {isConnected ? "Disconnect" : "Connect"}
-              </Button>
-              {isDev && (
-                <Checkbox
-                  checked={useMock}
-                  onCheckedChange={(details) => setUseMock(!!details.checked)}
-                >
-                  Use Mock Bike
-                </Checkbox>
-              )}
-            </Stack>
+  const adjustTargetPower = (delta: number) => {
+    const newValue = Math.min(600, Math.max(100, targetPower + delta));
+    setTargetPower(newValue);
+    handleControlChange("targetPower", newValue);
+  };
 
-            <Stack direction="column" gap={8} pb={4} width="100%">
-              <Slider
-                min={0}
-                max={100}
-                value={[resistance]}
-                onValueChange={(details) => {
-                  const value = details.value[0] ?? 0;
-                  setResistance(value);
-                  handleControlChange("resistance", value);
-                }}
-                marks={[
-                  { value: 0, label: "0" },
-                  { value: 10, label: "10" },
-                  { value: 20, label: "20" },
-                  { value: 30, label: "30" },
-                  { value: 40, label: "40" },
-                  { value: 50, label: "50" },
-                  { value: 60, label: "60" },
-                  { value: 70, label: "70" },
-                  { value: 80, label: "80" },
-                  { value: 90, label: "90" },
-                  { value: 100, label: "100" },
-                ]}
-              >
-                Resistance level: {resistance} %
-              </Slider>
-              <Slider
-                min={100}
-                max={600}
-                value={[targetPower]}
-                onValueChange={(details) => {
-                  const value = details.value[0] ?? 100;
-                  setTargetPower(value);
-                  handleControlChange("targetPower", value);
-                }}
-                marks={[
-                  { value: 100, label: "100" },
-                  { value: 200, label: "200" },
-                  { value: 300, label: "300" },
-                  { value: 400, label: "400" },
-                  { value: 500, label: "500" },
-                  { value: 600, label: "600" },
-                ]}
-              >
-                Target Power: {targetPower} W
-              </Slider>
-            </Stack>
-          </Stack>
-        </Card.Body>
-      </Card.Root>
+  const adjustResistance = (delta: number) => {
+    const newValue = Math.min(100, Math.max(0, resistance + delta));
+    setResistance(newValue);
+    handleControlChange("resistance", newValue);
+  };
+
+  if (!isConnected) {
+    return (
+      <Stack gap={4} align="center" justify="center" py={12} className="animate-scale-in">
+        <button
+          onClick={handleConnect}
+          className={css({
+            display: "flex",
+            alignItems: "center",
+            gap: "3",
+            padding: "16px 40px",
+            fontSize: "xl",
+            fontWeight: "600",
+            fontFamily: "var(--font-body)",
+            background: "var(--color-power)",
+            color: "#0a0a0f",
+            border: "none",
+            borderRadius: "xl",
+            cursor: "pointer",
+            transition: "all 0.2s ease",
+            _hover: {
+              opacity: 0.9,
+              transform: "translateY(-1px)",
+            },
+          })}
+        >
+          <Bluetooth size={22} />
+          Connect Bike
+        </button>
+        {isDev && (
+          <Checkbox
+            checked={useMock}
+            onCheckedChange={(details) => setUseMock(!!details.checked)}
+          >
+            Use Mock Bike
+          </Checkbox>
+        )}
+      </Stack>
+    );
+  }
+
+  return (
+    <Stack gap={6} width="100%">
+      {/* Target Power - Primary control */}
+      <Stack gap={3} align="center" className="animate-fade-in-up animate-delay-1">
+        <Text
+          size="lg"
+          fontWeight="medium"
+          style={{ color: "var(--color-text-muted)" }}
+        >
+          Target Power
+        </Text>
+        <Text
+          size="4xl"
+          fontWeight="bold"
+          style={{
+            color: "var(--color-power)",
+            textShadow: "var(--glow-power)",
+          }}
+        >
+          {targetPower} W
+        </Text>
+        <Stack direction="row" gap={2} width="100%">
+          <button
+            onClick={() => adjustTargetPower(-50)}
+            disabled={targetPower <= 100}
+            className={controlBtnStyle}
+            style={{ flex: 0.7, height: 48, fontSize: 16 }}
+          >
+            <Minus size={16} />
+            50
+          </button>
+          <button
+            onClick={() => adjustTargetPower(-10)}
+            disabled={targetPower <= 100}
+            className={controlBtnStyle}
+            style={{ flex: 1, height: 72, fontSize: 24 }}
+          >
+            <Minus size={28} />
+            10
+          </button>
+          <button
+            onClick={() => adjustTargetPower(10)}
+            disabled={targetPower >= 600}
+            className={controlBtnStyle}
+            style={{ flex: 1, height: 72, fontSize: 24 }}
+          >
+            <Plus size={28} />
+            10
+          </button>
+          <button
+            onClick={() => adjustTargetPower(50)}
+            disabled={targetPower >= 600}
+            className={controlBtnStyle}
+            style={{ flex: 0.7, height: 48, fontSize: 16 }}
+          >
+            <Plus size={16} />
+            50
+          </button>
+        </Stack>
+      </Stack>
+
+      {/* Resistance - Secondary control */}
+      <Stack gap={2} align="center" className="animate-fade-in-up animate-delay-2">
+        <Text
+          size="md"
+          fontWeight="medium"
+          style={{ color: "var(--color-text-muted)" }}
+        >
+          Resistance
+        </Text>
+        <Text size="2xl" fontWeight="bold">
+          {resistance}%
+        </Text>
+        <Stack direction="row" gap={2} width="100%">
+          <button
+            onClick={() => adjustResistance(-50)}
+            disabled={resistance <= 0}
+            className={controlBtnStyle}
+            style={{ flex: 0.7, height: 40, fontSize: 14 }}
+          >
+            <Minus size={14} />
+            50
+          </button>
+          <button
+            onClick={() => adjustResistance(-10)}
+            disabled={resistance <= 0}
+            className={controlBtnStyle}
+            style={{ flex: 1, height: 52, fontSize: 18 }}
+          >
+            <Minus size={20} />
+            10
+          </button>
+          <button
+            onClick={() => adjustResistance(10)}
+            disabled={resistance >= 100}
+            className={controlBtnStyle}
+            style={{ flex: 1, height: 52, fontSize: 18 }}
+          >
+            <Plus size={20} />
+            10
+          </button>
+          <button
+            onClick={() => adjustResistance(50)}
+            disabled={resistance >= 100}
+            className={controlBtnStyle}
+            style={{ flex: 0.7, height: 40, fontSize: 14 }}
+          >
+            <Plus size={14} />
+            50
+          </button>
+        </Stack>
+      </Stack>
+
     </Stack>
   );
 };

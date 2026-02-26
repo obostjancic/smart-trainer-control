@@ -6,9 +6,11 @@ import { BikeControls } from "./components/BikeControls";
 import { BikeProvider } from "./components/BikeProvider";
 import { CurrentStats } from "./components/CurrentStats";
 import { ActivityEndDialog } from "./components/ActivityEndDialog";
+import { ThemeToggle } from "./components/ThemeToggle";
 import { ActivityProvider, useActivity } from "./contexts/ActivityContext";
 import { ActivityPoint, ActivityStatus } from "./hooks/useActivity";
 import { BikeData } from "./lib/bike/types";
+import { bikeBridge } from "./lib/bike";
 import { useBike } from "./components/BikeProvider";
 
 function AppContent() {
@@ -65,17 +67,58 @@ function AppContent() {
     resetActivity();
   }, [resetActivity]);
 
+  const isActive = activity.status !== ActivityStatus.NotStarted;
+
   return (
-    <Box p="4">
-      <Stack gap="2">
-        <BikeControls />
-        <Stack
-          direction={{ base: "column", md: "row" }}
-          gap="2"
-          width="100%"
-          alignItems="center"
-        >
-          <Box width={{ base: "100%", md: "1/3" }}>
+    <Box
+      p={{ base: 3, md: 4 }}
+      maxWidth="1200px"
+      mx="auto"
+      minHeight="100dvh"
+    >
+      {isActive ? (
+        /* Active workout layout */
+        <Stack gap={{ base: 4, md: 4 }}>
+          {/* Top bar: duration + pause/stop */}
+          <ActivityControls
+            disabled={!isConnected}
+            status={activity.status}
+            duration={activity.duration}
+            onStartActivity={handleStartActivity}
+            onPauseActivity={handlePauseActivity}
+            onResumeActivity={handleResumeActivity}
+            onStopActivity={handleStopActivity}
+            onDisconnect={() => bikeBridge.disconnect()}
+          />
+
+          {/* Desktop: two columns. Mobile: single stack */}
+          <Stack
+            direction={{ base: "column", md: "row" }}
+            gap={{ base: 4, md: 6 }}
+          >
+            {/* Left column: stats + controls */}
+            <Stack gap={4} flex={{ md: "1" }}>
+              {/* Hero stats */}
+              <CurrentStats data={currentData} />
+
+              {/* Bike controls (target power + resistance buttons) */}
+              <BikeControls />
+            </Stack>
+
+            {/* Right column: chart (desktop only shows as column) */}
+            <Box flex={{ md: "1.5" }} display="flex" alignItems="center">
+              <ActivityChart points={chartData.current} />
+            </Box>
+          </Stack>
+        </Stack>
+      ) : (
+        /* Pre-workout layout */
+        <Stack gap={6} align="center" justify="center" minHeight="80dvh">
+          {/* Connection + controls */}
+          <BikeControls />
+
+          {/* Start button */}
+          <Box width="100%" maxWidth="400px">
             <ActivityControls
               disabled={!isConnected}
               status={activity.status}
@@ -86,12 +129,10 @@ function AppContent() {
               onStopActivity={handleStopActivity}
             />
           </Box>
-          <Box width={{ base: "100%", md: "2/3" }}>
-            <CurrentStats data={currentData} />
-          </Box>
         </Stack>
-        <ActivityChart points={chartData.current} />
-      </Stack>
+      )}
+
+      <ThemeToggle />
       <ActivityEndDialog
         onOpenChange={(details) => {
           if (!details.open) {

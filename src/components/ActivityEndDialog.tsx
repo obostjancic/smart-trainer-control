@@ -18,7 +18,15 @@ function ActivityStats({ activity }: { activity: Activity }) {
   const avgSpeed = avg(activity.points.map((point) => point.speed ?? 0));
 
   return (
-    <Stack gap="4" p="4" bg="gray.100" rounded="md">
+    <Stack
+      gap="4"
+      p="4"
+      rounded="md"
+      style={{
+        backgroundColor: "var(--color-btn-bg)",
+        border: "1px solid var(--color-border)",
+      }}
+    >
       <Stack direction="row" justify="space-between">
         <Text>Duration</Text>
         <Text fontWeight="bold">{formatDuration(activity.duration)}</Text>
