@@ -20,7 +20,7 @@ pnpm test      # run tests
 pnpm lint      # eslint
 ```
 
-Requires Chrome, Edge, or Opera (Web Bluetooth).
+Requires a Chromium-based browser (Chrome, Edge, or Opera) — Web Bluetooth is not supported in Firefox or Safari.
 
 ## License
 

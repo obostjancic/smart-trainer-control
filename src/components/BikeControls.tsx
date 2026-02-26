@@ -125,6 +125,11 @@ export const BikeControls = () => {
             Use Mock Bike (dev)
           </Checkbox>
         )}
+        {!("bluetooth" in navigator) && (
+          <Text size="xs" style={{ color: "var(--color-text-muted)", opacity: 0.6 }}>
+            Requires Chrome, Edge, or Opera (Web Bluetooth)
+          </Text>
+        )}
       </Stack>
     );
   }
