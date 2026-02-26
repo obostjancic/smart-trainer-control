@@ -2,7 +2,7 @@
 
 Control a Van Rysel D100 smart trainer from your browser via Web Bluetooth.
 
-**[bike.ognjenbostjancic.com](https://bike.ognjenbostjancic.com)**
+**[bike.ogi.fyi](https://bike.ogi.fyi)**
 
 ![Smart Trainer Control](public/screenshot.png)
 

@@ -2,7 +2,7 @@
 
 ## Project
 
-Smart Trainer Control — web app for controlling a Van Rysel D100 smart trainer via Web Bluetooth. Deployed at bike.ognjenbostjancic.com.
+Smart Trainer Control — web app for controlling a Van Rysel D100 smart trainer via Web Bluetooth. Deployed at bike.ogi.fyi.
 
 ## Commands
 
