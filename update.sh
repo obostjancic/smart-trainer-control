@@ -1,5 +1,5 @@
-# Store the hash of package.json and yarn.lock before pulling
-OLD_PACKAGE_HASH=$(md5sum package.json yarn.lock 2>/dev/null || echo "none")
+# Store the hash of package.json and pnpm-lock.yaml before pulling
+OLD_PACKAGE_HASH=$(md5sum package.json pnpm-lock.yaml 2>/dev/null || echo "none")
 
 # Pull and capture output
 PULL_OUTPUT=$(git pull)
@@ -11,20 +11,20 @@ if [ "$PULL_OUTPUT" = "Already up to date." ]; then
 fi
 
 # Check if package files changed
-NEW_PACKAGE_HASH=$(md5sum package.json yarn.lock 2>/dev/null || echo "none")
+NEW_PACKAGE_HASH=$(md5sum package.json pnpm-lock.yaml 2>/dev/null || echo "none")
 
 if [ "$OLD_PACKAGE_HASH" != "$NEW_PACKAGE_HASH" ]; then
     echo "📦 Dependencies changed, installing packages..."
-    yarn install --frozen-lockfile
+    pnpm install --frozen-lockfile
 else
     echo "📦 Dependencies unchanged, skipping install"
 fi
 
 echo "🧪 Running tests..."
-yarn test --run || exit 1
+pnpm test --run || exit 1
 
 echo "🏗️ Building..."
-yarn build
+pnpm build
 
 echo "🔄 Restarting service..."
 pm2 restart bike

@@ -25,24 +25,24 @@ Check out at: [bike.ognjenbostjancic.com](https://bike.ognjenbostjancic.com)
 
 ```bash
 # Install
-yarn install
+pnpm install
 
 # Dev
-yarn dev
+pnpm dev
 
 # Build
-yarn build
+pnpm build
 ```
 
 ## Development
 
 ```bash
-yarn dev      # Start dev server
-yarn build    # Build for prod
-yarn lint     # Run ESLint
-yarn preview  # Preview prod build
-yarn clean    # Clean dist
-yarn serve    # Serve prod build
+pnpm dev      # Start dev server
+pnpm build    # Build for prod
+pnpm lint     # Run ESLint
+pnpm preview  # Preview prod build
+pnpm clean    # Clean dist
+pnpm serve    # Serve prod build
 ```
 
 ## Project Structure
@@ -59,7 +59,7 @@ src/
 ## Requirements
 
 - Node.js 18+
-- Yarn
+- pnpm
 - Chrome/Edge/Opera (Web Bluetooth support)
 
 ## License
