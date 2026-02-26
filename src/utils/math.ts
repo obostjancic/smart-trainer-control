@@ -4,3 +4,9 @@ export const avg = (values: number[] | undefined): number => {
   const result = values.reduce((a, b) => a + b, 0) / values.length;
   return parseFloat(result.toFixed(5));
 };
+
+export const max = (values: number[] | undefined): number => {
+  if (!values) return NaN;
+  if (values.length === 0) return 0;
+  return Math.max(...values);
+};

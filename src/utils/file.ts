@@ -1,7 +1,7 @@
 import { ActivityPoint } from "@/hooks/useActivity";
 import { generateTCX, tcxFormat } from "@/lib/file/tcx";
 
-const downloadFile = (content: string, filename: string, mimeType: string) => {
+export const downloadFile = (content: string, filename: string, mimeType: string) => {
   const blob = new Blob([content], { type: mimeType });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -13,7 +13,7 @@ const downloadFile = (content: string, filename: string, mimeType: string) => {
   URL.revokeObjectURL(url);
 };
 
-const downloadTCX = (content: string, prefix: string) => {
+export const downloadTCX = (content: string, prefix: string) => {
   const filename = `${prefix}-${new Date().toISOString()}.tcx`;
   downloadFile(content, filename, "application/xml");
 };

@@ -5,7 +5,7 @@ import { ActivityControls } from "./components/ActivityControls";
 import { BikeControls } from "./components/BikeControls";
 import { BikeProvider } from "./components/BikeProvider";
 import { CurrentStats } from "./components/CurrentStats";
-import { ActivityEndDialog } from "./components/ActivityEndDialog";
+import { ActivitySummary } from "./components/ActivitySummary";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { ActivityProvider, useActivity } from "./contexts/ActivityContext";
 import { ActivityPoint, ActivityStatus } from "./hooks/useActivity";
@@ -68,6 +68,9 @@ function AppContent() {
   }, [resetActivity]);
 
   const isActive = activity.status !== ActivityStatus.NotStarted;
+  const hasSummary =
+    activity.status === ActivityStatus.NotStarted &&
+    activity.points.length > 0;
 
   return (
     <Box
@@ -76,7 +79,13 @@ function AppContent() {
       mx="auto"
       minHeight="100dvh"
     >
-      {isActive ? (
+      {hasSummary ? (
+        <ActivitySummary
+          activity={activity}
+          chartPoints={chartData.current}
+          onReset={handleResetActivity}
+        />
+      ) : isActive ? (
         /* Active workout layout */
         <Stack gap={{ base: 4, md: 4 }} justify={{ md: "center" }} minHeight={{ md: "calc(100dvh - 32px)" }}>
           {/* Top bar: duration + pause/stop */}
@@ -133,13 +142,6 @@ function AppContent() {
       )}
 
       <ThemeToggle />
-      <ActivityEndDialog
-        onOpenChange={(details) => {
-          if (!details.open) {
-            handleResetActivity();
-          }
-        }}
-      />
     </Box>
   );
 }

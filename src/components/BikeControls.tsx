@@ -84,6 +84,14 @@ export const BikeControls = () => {
   if (!isConnected) {
     return (
       <Stack gap={4} align="center" justify="center" py={12} className="animate-scale-in">
+        <Stack gap={1} align="center" mb={2}>
+          <Text fontSize="2xl" fontWeight="bold">
+            Smart Trainer Control
+          </Text>
+          <Text size="sm" style={{ color: "var(--color-text-muted)" }}>
+            Connect your bike to get started
+          </Text>
+        </Stack>
         <button
           onClick={handleConnect}
           className={css({
@@ -97,7 +105,7 @@ export const BikeControls = () => {
             background: "var(--color-power)",
             color: "#0a0a0f",
             border: "none",
-            borderRadius: "xl",
+            borderRadius: "lg",
             cursor: "pointer",
             transition: "all 0.2s ease",
             _hover: {
@@ -135,6 +143,7 @@ export const BikeControls = () => {
         <Text
           size="4xl"
           fontWeight="bold"
+          fontVariantNumeric="tabular-nums"
           style={{
             color: "var(--color-power)",
             textShadow: "var(--glow-power)",
@@ -191,7 +200,7 @@ export const BikeControls = () => {
         >
           Resistance
         </Text>
-        <Text size="2xl" fontWeight="bold">
+        <Text size="2xl" fontWeight="bold" fontVariantNumeric="tabular-nums">
           {resistance}%
         </Text>
         <Stack direction="row" gap={2} width="100%">

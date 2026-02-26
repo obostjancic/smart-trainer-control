@@ -44,6 +44,35 @@ const actionBtnStyle = css({
   },
 });
 
+const dangerBtnStyle = css({
+  display: "flex",
+  alignItems: "center",
+  gap: "1.5",
+  fontFamily: "var(--font-body)",
+  fontWeight: "500",
+  fontSize: "sm",
+  borderRadius: "lg",
+  cursor: "pointer",
+  transition: "all 0.15s ease",
+  background: "var(--color-btn-bg)",
+  border: "1px solid var(--color-danger)",
+  padding: "0 12px",
+  height: "36px",
+  color: "var(--color-danger)",
+  opacity: 0.7,
+  _hover: {
+    opacity: 1,
+  },
+  _active: {
+    transform: "scale(0.95)",
+  },
+  _disabled: {
+    opacity: 0.3,
+    cursor: "not-allowed",
+    transform: "none",
+  },
+});
+
 export function ActivityControls({
   status,
   duration,
@@ -72,7 +101,7 @@ export function ActivityControls({
           background: "var(--color-power)",
           color: "#0a0a0f",
           border: "none",
-          borderRadius: "xl",
+          borderRadius: "lg",
           cursor: "pointer",
           transition: "all 0.2s ease",
           _hover: {
@@ -101,9 +130,13 @@ export function ActivityControls({
       position={{ base: "sticky", md: "relative" }}
       top={{ base: "0", md: "auto" }}
       zIndex={{ base: 10, md: "auto" }}
-      py={{ base: 1, md: 0 }}
+      py={{ base: 2, md: 0 }}
+      pb={{ base: 2, md: 0 }}
       px={{ base: 0, md: 0 }}
-      style={{ backgroundColor: "var(--color-bg)" }}
+      style={{
+        backgroundColor: "var(--color-bg)",
+        borderBottom: "1px solid var(--color-border)",
+      }}
     >
       <Text
         size="3xl"
@@ -133,8 +166,7 @@ export function ActivityControls({
         <button
           onClick={onStopActivity}
           disabled={disabled}
-          className={actionBtnStyle}
-          style={{ color: "var(--color-danger)", borderColor: "var(--color-danger)", opacity: 0.7 }}
+          className={dangerBtnStyle}
         >
           <Square size={16} />
           Stop
@@ -142,8 +174,7 @@ export function ActivityControls({
         {onDisconnect && (
           <button
             onClick={onDisconnect}
-            className={actionBtnStyle}
-            style={{ padding: "0 12px", color: "var(--color-danger)", borderColor: "var(--color-danger)", opacity: 0.7 }}
+            className={dangerBtnStyle}
           >
             <BluetoothOff size={14} />
           </button>
