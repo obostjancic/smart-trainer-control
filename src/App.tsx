@@ -78,7 +78,7 @@ function AppContent() {
     >
       {isActive ? (
         /* Active workout layout */
-        <Stack gap={{ base: 4, md: 4 }}>
+        <Stack gap={{ base: 4, md: 4 }} justify={{ md: "center" }} minHeight={{ md: "calc(100dvh - 32px)" }}>
           {/* Top bar: duration + pause/stop */}
           <ActivityControls
             disabled={!isConnected}

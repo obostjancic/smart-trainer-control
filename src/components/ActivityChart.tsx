@@ -117,17 +117,6 @@ export function ActivityChart({ points }: ActivityChartProps) {
             cursor={{ stroke: "var(--color-text-muted)", strokeOpacity: 0.3 }}
           />
           <Area
-            yAxisId="power"
-            type="monotone"
-            dataKey="power"
-            stroke="var(--color-power)"
-            fill="url(#powerGradient)"
-            name="Power (W)"
-            isAnimationActive={false}
-            strokeWidth={2}
-            filter="url(#subtleGlow)"
-          />
-          <Area
             yAxisId="speed"
             type="monotone"
             dataKey="speed"
@@ -135,7 +124,18 @@ export function ActivityChart({ points }: ActivityChartProps) {
             fill="url(#speedGradient)"
             name="Speed (km/h)"
             isAnimationActive={false}
-            strokeWidth={2}
+            strokeWidth={1.5}
+            filter="url(#subtleGlow)"
+          />
+          <Area
+            yAxisId="power"
+            type="monotone"
+            dataKey="power"
+            stroke="var(--color-power)"
+            fill="url(#powerGradient)"
+            name="Power (W)"
+            isAnimationActive={false}
+            strokeWidth={1.5}
             filter="url(#subtleGlow)"
           />
         </AreaChart>
