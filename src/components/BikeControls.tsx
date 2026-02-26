@@ -114,7 +114,7 @@ export const BikeControls = () => {
             checked={useMock}
             onCheckedChange={(details) => setUseMock(!!details.checked)}
           >
-            Use Mock Bike
+            Use Mock Bike (dev)
           </Checkbox>
         )}
       </Stack>

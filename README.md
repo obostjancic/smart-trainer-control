@@ -1,66 +1,26 @@
 # Smart Trainer Control
 
-Web-based control interface for Van Rysel D100 smart trainer. Uses Web Bluetooth API for direct trainer communication.
+Control a Van Rysel D100 smart trainer from your browser via Web Bluetooth.
 
-Check out at: [bike.ognjenbostjancic.com](https://bike.ognjenbostjancic.com)
+**[bike.ognjenbostjancic.com](https://bike.ognjenbostjancic.com)**
 
-![Smart Trainer Control Screenshot](public/screenshot.png)
-
-## Features
-
-- Real-time power and cadence control
-- Web Bluetooth connectivity
-- Power/cadence data visualization
-- Responsive UI
+![Smart Trainer Control](public/screenshot.png)
 
 ## Stack
 
-- React 19 + TypeScript
-- Vite
-- Park UI (Panda CSS)
-- Web Bluetooth API
-- Recharts
+React 19, TypeScript, Vite, Park UI (Panda CSS), Recharts, Web Bluetooth API
 
-## Quick Start
+## Setup
 
 ```bash
-# Install
 pnpm install
-
-# Dev
-pnpm dev
-
-# Build
-pnpm build
+pnpm dev       # dev server
+pnpm build     # production build
+pnpm test      # run tests
+pnpm lint      # eslint
 ```
 
-## Development
-
-```bash
-pnpm dev      # Start dev server
-pnpm build    # Build for prod
-pnpm lint     # Run ESLint
-pnpm preview  # Preview prod build
-pnpm clean    # Clean dist
-pnpm serve    # Serve prod build
-```
-
-## Project Structure
-
-```
-src/
-├── assets/      # Static assets
-├── components/  # React components
-├── hooks/       # Custom hooks
-├── lib/         # Core logic
-└── utils/       # Utilities
-```
-
-## Requirements
-
-- Node.js 18+
-- pnpm
-- Chrome/Edge/Opera (Web Bluetooth support)
+Requires Chrome, Edge, or Opera (Web Bluetooth).
 
 ## License
 
