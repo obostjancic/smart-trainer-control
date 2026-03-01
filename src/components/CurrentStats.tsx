@@ -10,7 +10,7 @@ export function CurrentStats({ data }: CurrentStatsProps) {
   const speed = data?.speed ?? 0;
 
   return (
-    <Stack gap={1} align="center" py={{ base: 4, md: 6 }} className="animate-fade-in-up">
+    <Stack gap={1} align="center" py={{ base: 4, md: 6 }}>
       <Stack direction="row" gap={2} align="baseline" justify="center">
         <Text
           fontSize={{ base: "7xl", md: "8xl" }}

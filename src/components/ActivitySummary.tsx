@@ -90,7 +90,6 @@ export function ActivitySummary({
       flexDirection="column"
       justifyContent="center"
       py={6}
-      className="animate-fade-in-up"
     >
       <Stack gap={6}>
         {/* Header */}

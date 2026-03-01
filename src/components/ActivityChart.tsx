@@ -35,11 +35,7 @@ export function ActivityChart({ points }: ActivityChartProps) {
   }
 
   return (
-    <Box
-      width="100%"
-      height={{ base: "220px", md: "300px" }}
-      className="animate-fade-in-up animate-delay-2"
-    >
+    <Box width="100%" height={{ base: "220px", md: "300px" }}>
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
           data={displayData}
@@ -52,12 +48,28 @@ export function ActivityChart({ points }: ActivityChartProps) {
         >
           <defs>
             <linearGradient id="powerGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="var(--color-power)" stopOpacity={0.1} />
-              <stop offset="100%" stopColor="var(--color-power)" stopOpacity={0} />
+              <stop
+                offset="0%"
+                stopColor="var(--color-power)"
+                stopOpacity={0.1}
+              />
+              <stop
+                offset="100%"
+                stopColor="var(--color-power)"
+                stopOpacity={0}
+              />
             </linearGradient>
             <linearGradient id="speedGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="var(--color-speed)" stopOpacity={0.12} />
-              <stop offset="100%" stopColor="var(--color-speed)" stopOpacity={0} />
+              <stop
+                offset="0%"
+                stopColor="var(--color-speed)"
+                stopOpacity={0.12}
+              />
+              <stop
+                offset="100%"
+                stopColor="var(--color-speed)"
+                stopOpacity={0}
+              />
             </linearGradient>
             <filter id="subtleGlow">
               <feGaussianBlur stdDeviation="1" result="blur" />

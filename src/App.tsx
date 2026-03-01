@@ -74,16 +74,10 @@ function AppContent() {
 
   const isActive = activity.status !== ActivityStatus.NotStarted;
   const hasSummary =
-    activity.status === ActivityStatus.NotStarted &&
-    activity.points.length > 0;
+    activity.status === ActivityStatus.NotStarted && activity.points.length > 0;
 
   return (
-    <Box
-      p={{ base: 3, md: 4 }}
-      maxWidth="1200px"
-      mx="auto"
-      minHeight="100dvh"
-    >
+    <Box p={{ base: 3, md: 4 }} maxWidth="1200px" mx="auto" minHeight="100dvh">
       {hasSummary ? (
         <ActivitySummary
           activity={activity}
@@ -92,7 +86,11 @@ function AppContent() {
         />
       ) : isActive ? (
         /* Active workout layout */
-        <Stack gap={{ base: 4, md: 4 }} justify={{ md: "center" }} minHeight={{ md: "calc(100dvh - 32px)" }}>
+        <Stack
+          gap={{ base: 4, md: 4 }}
+          justify={{ md: "center" }}
+          minHeight={{ md: "calc(100dvh - 32px)" }}
+        >
           {/* Top bar: duration + pause/stop */}
           <ActivityControls
             disabled={!isConnected}
@@ -135,7 +133,7 @@ function AppContent() {
 
           {/* Start button — only after connected */}
           {isConnected && (
-            <Box width="100%" maxWidth="500px" className="animate-fade-in-up">
+            <Box width="100%" maxWidth="500px">
               <ActivityControls
                 status={activity.status}
                 duration={activity.duration}
