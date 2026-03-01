@@ -107,34 +107,6 @@ body {
   }
 }
 
-.animate-fade-in-up {
-  animation: energeticFadeIn 0.5s cubic-bezier(0.16, 0.22, 0.3, 1) both;
-}
-
-.animate-scale-in {
-  animation: energeticFadeIn 0.4s cubic-bezier(0.16, 0.22, 0.3, 1) both;
-}
-
-.animate-power-up {
-  animation: energeticFadeIn 0.5s cubic-bezier(0.16, 0.22, 0.3, 1) both;
-}
-
-.animate-delay-1 {
-  animation-delay: 0.1s;
-}
-.animate-delay-2 {
-  animation-delay: 0.2s;
-}
-.animate-delay-3 {
-  animation-delay: 0.3s;
-}
-.animate-delay-4 {
-  animation-delay: 0.4s;
-}
-.animate-delay-5 {
-  animation-delay: 0.5s;
-}
-
 /* BikeControls state machine — grid-stack crossfade, no layout shift */
 .bike-controls {
   display: grid;
@@ -151,17 +123,13 @@ body {
 }
 
 .bike-controls[data-state="connected"] .connect-section {
-  animation: energeticFadeOut 0.35s cubic-bezier(0.16, 0.22, 0.3, 1) forwards;
+  opacity: 0;
   pointer-events: none;
 }
 
-.bike-controls[data-state="connected"] .connect-section .connect-btn {
-  animation: successFlash 0.4s ease-out;
-}
-
 .bike-controls[data-state="connected"] .controls-section {
+  opacity: 1;
   pointer-events: auto;
-  animation: energeticFadeIn 0.5s cubic-bezier(0.16, 0.22, 0.3, 1) both;
 }
 
 /* Checkbox — use power color instead of default blue */
