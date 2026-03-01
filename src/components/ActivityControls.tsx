@@ -3,7 +3,7 @@ import { PlayIcon, Square, PauseIcon, BluetoothOff } from "lucide-react";
 import { formatDuration } from "../utils/time";
 import { Text } from "./ui/text";
 import { ActivityStatus } from "@/hooks/useActivity";
-import { css } from "styled-system/css";
+import { SportButton } from "./SportButton";
 
 interface ActivityControlsProps {
   status: ActivityStatus;
@@ -16,62 +16,7 @@ interface ActivityControlsProps {
   onDisconnect?: () => void;
 }
 
-const actionBtnStyle = css({
-  display: "flex",
-  alignItems: "center",
-  gap: "1.5",
-  fontFamily: "var(--font-body)",
-  fontWeight: "500",
-  fontSize: "sm",
-  borderRadius: "lg",
-  cursor: "pointer",
-  transition: "all 0.15s ease",
-  background: "var(--color-btn-bg)",
-  border: "1px solid var(--color-btn-border)",
-  padding: "0 12px",
-  height: "36px",
-  color: "var(--color-text-muted)",
-  _hover: {
-    opacity: 1,
-  },
-  _active: {
-    transform: "scale(0.95)",
-  },
-  _disabled: {
-    opacity: 0.3,
-    cursor: "not-allowed",
-    transform: "none",
-  },
-});
-
-const dangerBtnStyle = css({
-  display: "flex",
-  alignItems: "center",
-  gap: "1.5",
-  fontFamily: "var(--font-body)",
-  fontWeight: "500",
-  fontSize: "sm",
-  borderRadius: "lg",
-  cursor: "pointer",
-  transition: "all 0.15s ease",
-  background: "var(--color-btn-bg)",
-  border: "1px solid var(--color-danger)",
-  padding: "0 12px",
-  height: "36px",
-  color: "var(--color-danger)",
-  opacity: 0.7,
-  _hover: {
-    opacity: 1,
-  },
-  _active: {
-    transform: "scale(0.95)",
-  },
-  _disabled: {
-    opacity: 0.3,
-    cursor: "not-allowed",
-    transform: "none",
-  },
-});
+const smallBtnStyle = { padding: "0 12px", height: 36, fontSize: 14 };
 
 export function ActivityControls({
   status,
@@ -85,39 +30,15 @@ export function ActivityControls({
 }: ActivityControlsProps) {
   if (status === ActivityStatus.NotStarted) {
     return (
-      <button
+      <SportButton
+        variant="primary"
         onClick={onStartActivity}
         disabled={disabled}
-        className={css({
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "3",
-          width: "100%",
-          height: "56px",
-          fontSize: "xl",
-          fontWeight: "600",
-          fontFamily: "var(--font-body)",
-          background: "var(--color-power)",
-          color: "#0a0a0f",
-          border: "none",
-          borderRadius: "lg",
-          cursor: "pointer",
-          transition: "all 0.2s ease",
-          _hover: {
-            opacity: 0.9,
-            transform: "translateY(-1px)",
-          },
-          _disabled: {
-            opacity: 0.3,
-            cursor: "not-allowed",
-            transform: "none",
-          },
-        })}
+        style={{ width: "100%", height: 56, fontSize: 20, gap: 12 }}
       >
         <PlayIcon size={24} />
         Start Activity
-      </button>
+      </SportButton>
     );
   }
 
@@ -147,14 +68,15 @@ export function ActivityControls({
         {formatDuration(duration)}
       </Text>
       <Stack direction="row" gap={1} align="center">
-        <button
+        <SportButton
+          variant="secondary"
           onClick={
             status === ActivityStatus.Running
               ? onPauseActivity
               : onResumeActivity
           }
           disabled={disabled}
-          className={actionBtnStyle}
+          style={smallBtnStyle}
         >
           {status === ActivityStatus.Running ? (
             <PauseIcon size={16} />
@@ -162,22 +84,24 @@ export function ActivityControls({
             <PlayIcon size={16} />
           )}
           {status === ActivityStatus.Running ? "Pause" : "Resume"}
-        </button>
-        <button
+        </SportButton>
+        <SportButton
+          variant="danger"
           onClick={onStopActivity}
           disabled={disabled}
-          className={dangerBtnStyle}
+          style={smallBtnStyle}
         >
           <Square size={16} />
           Stop
-        </button>
+        </SportButton>
         {onDisconnect && (
-          <button
+          <SportButton
+            variant="danger"
             onClick={onDisconnect}
-            className={dangerBtnStyle}
+            style={smallBtnStyle}
           >
             <BluetoothOff size={14} />
-          </button>
+          </SportButton>
         )}
       </Stack>
     </Stack>

@@ -1,9 +1,10 @@
 @layer reset, base, tokens, recipes, utilities;
 
 :root {
-  --font-body: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: "Space Grotesk", system-ui, sans-serif;
   --color-danger: #ff3b5c;
-  --transition-theme: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  --transition-theme:
+    background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 /* Dark theme (default) */
@@ -55,47 +56,116 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Animations */
-@keyframes fadeInUp {
+/* Animations — energetic fade-in with punchy bezier */
+@keyframes energeticFadeIn {
   from {
     opacity: 0;
-    transform: translateY(12px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
 @keyframes pulseGlow {
-  0%, 100% { filter: brightness(1); }
-  50% { filter: brightness(1.2); }
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.2);
+  }
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes scaleIn {
   from {
-    opacity: 0;
-    transform: scale(0.95);
+    transform: rotate(0deg);
   }
   to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes energeticFadeOut {
+  from {
     opacity: 1;
-    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes successFlash {
+  0% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.4);
+    box-shadow: 0 0 30px rgba(0, 229, 255, 0.5);
+  }
+  100% {
+    filter: brightness(1);
   }
 }
 
 .animate-fade-in-up {
-  animation: fadeInUp 0.4s ease-out both;
+  animation: energeticFadeIn 0.5s cubic-bezier(0.16, 0.22, 0.3, 1) both;
 }
 
 .animate-scale-in {
-  animation: scaleIn 0.3s ease-out both;
+  animation: energeticFadeIn 0.4s cubic-bezier(0.16, 0.22, 0.3, 1) both;
 }
 
-.animate-delay-1 { animation-delay: 0.05s; }
-.animate-delay-2 { animation-delay: 0.1s; }
-.animate-delay-3 { animation-delay: 0.15s; }
+.animate-power-up {
+  animation: energeticFadeIn 0.5s cubic-bezier(0.16, 0.22, 0.3, 1) both;
+}
+
+.animate-delay-1 {
+  animation-delay: 0.1s;
+}
+.animate-delay-2 {
+  animation-delay: 0.2s;
+}
+.animate-delay-3 {
+  animation-delay: 0.3s;
+}
+.animate-delay-4 {
+  animation-delay: 0.4s;
+}
+.animate-delay-5 {
+  animation-delay: 0.5s;
+}
+
+/* BikeControls state machine — grid-stack crossfade, no layout shift */
+.bike-controls {
+  display: grid;
+}
+
+.bike-controls .connect-section,
+.bike-controls .controls-section {
+  grid-area: 1 / 1;
+}
+
+.bike-controls .controls-section {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.bike-controls[data-state="connected"] .connect-section {
+  animation: energeticFadeOut 0.35s cubic-bezier(0.16, 0.22, 0.3, 1) forwards;
+  pointer-events: none;
+}
+
+.bike-controls[data-state="connected"] .connect-section .connect-btn {
+  animation: successFlash 0.4s ease-out;
+}
+
+.bike-controls[data-state="connected"] .controls-section {
+  pointer-events: auto;
+  animation: energeticFadeIn 0.5s cubic-bezier(0.16, 0.22, 0.3, 1) both;
+}
+
+/* Checkbox — use power color instead of default blue */
+[data-scope="checkbox"] [data-part="control"][data-state="checked"] {
+  background: var(--color-power) !important;
+  border-color: var(--color-power) !important;
+}

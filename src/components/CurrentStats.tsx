@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { Stack } from "styled-system/jsx";
 import { BikeData } from "../lib/bike/types";
 import { Text } from "./ui/text";
@@ -8,13 +7,7 @@ interface CurrentStatsProps {
 }
 
 export function CurrentStats({ data }: CurrentStatsProps) {
-  const [displaySpeed, setDisplaySpeed] = useState(0);
-
-  useEffect(() => {
-    if (data?.speed !== undefined) {
-      setDisplaySpeed(data.speed);
-    }
-  }, [data?.speed]);
+  const speed = data?.speed ?? 0;
 
   return (
     <Stack gap={1} align="center" py={{ base: 4, md: 6 }} className="animate-fade-in-up">
@@ -51,7 +44,7 @@ export function CurrentStats({ data }: CurrentStatsProps) {
             transition: "all 0.3s ease-out",
           }}
         >
-          {displaySpeed.toFixed(1)}
+          {speed.toFixed(1)}
         </Text>
         <Text
           fontSize={{ base: "xl", md: "2xl" }}

@@ -27,15 +27,20 @@ function AppContent() {
   const [currentData, setCurrentData] = useState<BikeData>({});
   const chartData = useRef<ActivityPoint[]>([]);
 
+  const activityStatusRef = useRef(activity.status);
+  const activityDurationRef = useRef(activity.duration);
+  activityStatusRef.current = activity.status;
+  activityDurationRef.current = activity.duration;
+
   useEffect(() => {
     function handleBikeData(event: MessageEvent) {
       if (event.data.type === "bike-data") {
         const data = event.data.payload as BikeData;
         setCurrentData(data);
         addActivityPoint(data.instantaneousPower ?? null, data.speed ?? null);
-        if (activity.status === ActivityStatus.Running)
+        if (activityStatusRef.current === ActivityStatus.Running)
           chartData.current.push({
-            timestamp: activity.duration,
+            timestamp: activityDurationRef.current,
             power: data.instantaneousPower,
             speed: data.speed,
           });
@@ -44,7 +49,7 @@ function AppContent() {
 
     window.addEventListener("message", handleBikeData);
     return () => window.removeEventListener("message", handleBikeData);
-  }, [addActivityPoint, activity.status, activity.duration]);
+  }, [addActivityPoint]);
 
   const handleStartActivity = useCallback(() => {
     startActivity();
@@ -124,20 +129,23 @@ function AppContent() {
         /* Pre-workout layout */
         <Stack gap={6} align="center" justify="center" minHeight="80dvh">
           {/* Connection + controls */}
-          <BikeControls />
-
-          {/* Start button */}
-          <Box width="100%" maxWidth="400px">
-            <ActivityControls
-              disabled={!isConnected}
-              status={activity.status}
-              duration={activity.duration}
-              onStartActivity={handleStartActivity}
-              onPauseActivity={handlePauseActivity}
-              onResumeActivity={handleResumeActivity}
-              onStopActivity={handleStopActivity}
-            />
+          <Box width="100%" maxWidth="500px">
+            <BikeControls />
           </Box>
+
+          {/* Start button — only after connected */}
+          {isConnected && (
+            <Box width="100%" maxWidth="500px" className="animate-fade-in-up">
+              <ActivityControls
+                status={activity.status}
+                duration={activity.duration}
+                onStartActivity={handleStartActivity}
+                onPauseActivity={handlePauseActivity}
+                onResumeActivity={handleResumeActivity}
+                onStopActivity={handleStopActivity}
+              />
+            </Box>
+          )}
         </Stack>
       )}
 

@@ -6,10 +6,10 @@ import { generateTCX } from "@/lib/file/tcx";
 import { formatDuration } from "@/utils/time";
 import { ActivityChart } from "./ActivityChart";
 import { Text } from "./ui/text";
-import { Button } from "./ui/button";
 import { DownloadIcon, UploadIcon, CheckCircle } from "lucide-react";
 import { Box, Stack, Grid } from "styled-system/jsx";
 import { css } from "styled-system/css";
+import { SportButton } from "./SportButton";
 
 interface ActivitySummaryProps {
   activity: Activity;
@@ -143,42 +143,31 @@ export function ActivitySummary({
 
         {/* Actions */}
         <Stack gap={3} direction={{ base: "column", md: "row" }}>
-          <button
+          <SportButton
+            variant="primary"
             onClick={handleDownload}
-            className={css({
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "2",
-              flex: 1,
-              height: "48px",
-              fontSize: "md",
-              fontWeight: "600",
-              fontFamily: "var(--font-body)",
-              background: "var(--color-power)",
-              color: "#0a0a0f",
-              border: "none",
-              borderRadius: "lg",
-              cursor: "pointer",
-              transition: "all 0.2s ease",
-              _hover: {
-                opacity: 0.9,
-                transform: "translateY(-1px)",
-              },
-            })}
+            style={{ flex: 1, height: 56, fontSize: 16 }}
           >
             <DownloadIcon size={18} />
             Download TCX
-          </button>
-          <Button flex={1} variant="outline" onClick={handleMerge}>
+          </SportButton>
+          <SportButton
+            variant="secondary"
+            onClick={handleMerge}
+            style={{ flex: 1, height: 56, fontSize: 16 }}
+          >
             <UploadIcon size={18} />
             Merge with Existing
-          </Button>
+          </SportButton>
         </Stack>
 
-        <Button variant="ghost" onClick={onReset} width="full">
+        <SportButton
+          variant="ghost"
+          onClick={onReset}
+          style={{ width: "100%", height: 48, fontSize: 15 }}
+        >
           Done
-        </Button>
+        </SportButton>
       </Stack>
     </Box>
   );

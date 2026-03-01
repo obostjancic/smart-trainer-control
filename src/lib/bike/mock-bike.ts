@@ -44,6 +44,9 @@ class MockBike extends BikeInterface {
   async start(): Promise<void> {
     if (this._isRunning) return;
 
+    // Simulate real BLE connection delay
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     try {
       this._isRunning = true;
       this._currentIndex = 0;
