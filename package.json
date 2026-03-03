@@ -10,10 +10,11 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview",
+    "preview": "pnpm run build && wrangler dev",
     "clean": "rimraf dist",
     "serve": "serve -l 4174 dist",
-    "test": "vitest"
+    "test": "vitest",
+    "deploy": "pnpm run build && wrangler deploy"
   },
   "dependencies": {
     "@ark-ui/react": "^5.0.1",
@@ -27,6 +28,7 @@
     "vite-tsconfig-paths": "^5.1.4"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.25.6",
     "@eslint/js": "^9.21.0",
     "@pandacss/dev": "^0.53.1",
     "@park-ui/panda-preset": "^0.43.1",
@@ -53,7 +55,8 @@
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.24.1",
     "vite": "^6.2.0",
-    "vitest": "^3.0.9"
+    "vitest": "^3.0.9",
+    "wrangler": "^4.69.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
