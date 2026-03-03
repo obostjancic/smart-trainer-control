@@ -13,6 +13,7 @@ const baseStyle = css({
   alignItems: "center",
   justifyContent: "center",
   gap: "1.5",
+  padding: "12px 20px",
   fontFamily: "var(--font-body)",
   fontWeight: "600",
   borderRadius: "lg",
