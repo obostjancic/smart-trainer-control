@@ -46,6 +46,14 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
 
   const lastSecondRef = useRef(-1);
 
+  // Wall-clock refs for accurate duration across sleep/wake
+  const startedAtRef = useRef(0);
+  const pausedDurationRef = useRef(0);
+  const pausedAtRef = useRef<number | null>(null);
+
+  // Wake Lock to prevent phone from sleeping during workout
+  const wakeLockRef = useRef<WakeLockSentinel | null>(null);
+
   const addActivityPoint = useCallback(
     (power: number | null, speed: number | null) => {
       if (activity.status !== ActivityStatus.Running) return;
@@ -81,6 +89,9 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
   );
 
   const startActivity = useCallback(() => {
+    startedAtRef.current = Date.now();
+    pausedDurationRef.current = 0;
+    pausedAtRef.current = null;
     setActivity({
       status: ActivityStatus.Running,
       duration: 0,
@@ -91,6 +102,7 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const pauseActivity = useCallback(() => {
+    pausedAtRef.current = Date.now();
     setActivity((prev) => ({
       ...prev,
       status: ActivityStatus.Paused,
@@ -98,6 +110,10 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const resumeActivity = useCallback(() => {
+    if (pausedAtRef.current !== null) {
+      pausedDurationRef.current += Date.now() - pausedAtRef.current;
+      pausedAtRef.current = null;
+    }
     setActivity((prev) => ({
       ...prev,
       status: ActivityStatus.Running,
@@ -117,12 +133,15 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
     lastSecondRef.current = -1;
   }, []);
 
+  // Wall-clock based timer — survives phone sleep
   useEffect(() => {
     if (activity.status === ActivityStatus.Running) {
       intervalRef.current = window.setInterval(() => {
+        const elapsed =
+          Date.now() - startedAtRef.current - pausedDurationRef.current;
         setActivity((prev) => ({
           ...prev,
-          duration: prev.duration + 1000,
+          duration: elapsed,
         }));
       }, 1000);
     }
@@ -131,6 +150,46 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
       if (intervalRef.current) {
         window.clearInterval(intervalRef.current);
       }
+    };
+  }, [activity.status]);
+
+  // Wake Lock — prevent phone from sleeping during workout
+  useEffect(() => {
+    async function requestWakeLock() {
+      try {
+        if ("wakeLock" in navigator) {
+          wakeLockRef.current = await navigator.wakeLock.request("screen");
+        }
+      } catch {
+        // Wake lock request can fail (e.g. low battery)
+      }
+    }
+
+    function releaseWakeLock() {
+      wakeLockRef.current?.release();
+      wakeLockRef.current = null;
+    }
+
+    // Re-acquire wake lock when page becomes visible again
+    function handleVisibilityChange() {
+      if (
+        document.visibilityState === "visible" &&
+        activity.status === ActivityStatus.Running
+      ) {
+        requestWakeLock();
+      }
+    }
+
+    if (activity.status === ActivityStatus.Running) {
+      requestWakeLock();
+      document.addEventListener("visibilitychange", handleVisibilityChange);
+    } else {
+      releaseWakeLock();
+    }
+
+    return () => {
+      releaseWakeLock();
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, [activity.status]);
 
