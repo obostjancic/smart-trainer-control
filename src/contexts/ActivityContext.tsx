@@ -44,16 +44,15 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
   const intervalRef = useRef<number | null>(null);
   const currentSecondRef = useRef<SecondData>({ power: [], speed: [] });
 
+  const lastSecondRef = useRef(-1);
+
   const addActivityPoint = useCallback(
     (power: number | null, speed: number | null) => {
       if (activity.status !== ActivityStatus.Running) return;
 
       const now = Date.now();
       const currentSecond = Math.floor(now / 1000);
-      const lastPoint = activity.points[activity.points.length - 1];
-      const lastSecond = lastPoint
-        ? Math.floor(lastPoint.timestamp / 1000)
-        : -1;
+      const lastSecond = lastSecondRef.current;
 
       if (power !== null) currentSecondRef.current.power.push(power);
       if (speed !== null) currentSecondRef.current.speed.push(speed);
@@ -62,6 +61,7 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
         const avgPower = avg(currentSecondRef.current.power);
         const avgSpeed = avg(currentSecondRef.current.speed);
 
+        lastSecondRef.current = currentSecond;
         setActivity((prev) => ({
           ...prev,
           points: [
@@ -87,6 +87,7 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
       points: [],
     });
     currentSecondRef.current = { power: [], speed: [] };
+    lastSecondRef.current = -1;
   }, []);
 
   const pauseActivity = useCallback(() => {
@@ -113,6 +114,7 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
   const resetActivity = useCallback(() => {
     setActivity(initialActivity);
     currentSecondRef.current = { power: [], speed: [] };
+    lastSecondRef.current = -1;
   }, []);
 
   useEffect(() => {

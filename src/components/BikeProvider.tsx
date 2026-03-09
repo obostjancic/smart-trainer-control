@@ -1,24 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-
-// Only import the types we need
-interface BikeData {
-  speed?: number;
-  averageSpeed?: number;
-  cadence?: number;
-  averageCadence?: number;
-  totalDistance?: number;
-  resistanceLevel?: number;
-  instantaneousPower?: number;
-  averagePower?: number;
-  totalEnergy?: number;
-  energyPerHour?: number;
-  energyPerMinute?: number;
-  heartrate?: number;
-  metabolicEquivalent?: number;
-  time?: number;
-  remainingTime?: number;
-  raw?: string;
-}
+import { BikeData } from "@/lib/bike/types";
 
 interface BikeContextType {
   data: BikeData | null;

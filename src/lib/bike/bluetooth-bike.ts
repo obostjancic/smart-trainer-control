@@ -1,3 +1,4 @@
+import { MIN_POWER } from "@/constants";
 import BikeInterface, { BikeControl } from "./bike-interface";
 import { parseIndoorBikeData } from "./ftms";
 import { FTMSControlResponseCode, getControlPointOpCode } from "./ftms-control";
@@ -125,7 +126,7 @@ class BluetoothBike extends BikeInterface {
       await this.sendControl("requestControl");
 
       // Sync trainer to UI defaults so state matches after reload
-      await this.sendControl("targetPower", 100);
+      await this.sendControl("targetPower", MIN_POWER);
       await this.sendControl("resistance", 0);
 
       this._isRunning = true;

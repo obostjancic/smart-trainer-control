@@ -29,9 +29,9 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>((props, ref) => {
                 </StyledSlider.Thumb>
               ))}
             </StyledSlider.Control>
-            {props.marks && (
+            {marks && (
               <StyledSlider.MarkerGroup>
-                {props.marks.map((mark) => (
+                {marks.map((mark) => (
                   <StyledSlider.Marker key={mark.value} value={mark.value}>
                     {mark.label}
                   </StyledSlider.Marker>

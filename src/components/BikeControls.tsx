@@ -1,5 +1,6 @@
 import { bikeBridge, initializeBike } from "@/lib/bike";
 import { BikeControl } from "@/lib/bike/bike-interface";
+import { MIN_POWER, MAX_POWER, MAX_RESISTANCE } from "@/constants";
 import { Bluetooth, Loader2, Minus, Plus } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Stack } from "styled-system/jsx";
@@ -16,7 +17,7 @@ export const BikeControls = () => {
   const [useMock, setUseMock] = useState(false);
   const [connecting, setConnecting] = useState(false);
   const [resistance, setResistance] = useState(0);
-  const [targetPower, setTargetPower] = useState(100);
+  const [targetPower, setTargetPower] = useState(MIN_POWER);
 
   const controlTimeoutRef = useRef<number | null>(null);
 
@@ -51,13 +52,13 @@ export const BikeControls = () => {
   }, []);
 
   const adjustTargetPower = (delta: number) => {
-    const newValue = Math.min(600, Math.max(100, targetPower + delta));
+    const newValue = Math.min(MAX_POWER, Math.max(MIN_POWER, targetPower + delta));
     setTargetPower(newValue);
     handleControlChange("targetPower", newValue);
   };
 
   const adjustResistance = (delta: number) => {
-    const newValue = Math.min(100, Math.max(0, resistance + delta));
+    const newValue = Math.min(MAX_RESISTANCE, Math.max(0, resistance + delta));
     setResistance(newValue);
     handleControlChange("resistance", newValue);
   };
@@ -132,7 +133,7 @@ export const BikeControls = () => {
           <SportButton
             variant="control"
             onClick={() => adjustTargetPower(-50)}
-            disabled={targetPower <= 100}
+            disabled={targetPower <= MIN_POWER}
             style={{ flex: 0.7, height: 48, fontSize: 16 }}
           >
             <Minus size={16} />
@@ -141,7 +142,7 @@ export const BikeControls = () => {
           <SportButton
             variant="control"
             onClick={() => adjustTargetPower(-10)}
-            disabled={targetPower <= 100}
+            disabled={targetPower <= MIN_POWER}
             style={{ flex: 1, height: 72, fontSize: 24 }}
           >
             <Minus size={28} />
@@ -150,7 +151,7 @@ export const BikeControls = () => {
           <SportButton
             variant="control"
             onClick={() => adjustTargetPower(10)}
-            disabled={targetPower >= 600}
+            disabled={targetPower >= MAX_POWER}
             style={{ flex: 1, height: 72, fontSize: 24 }}
           >
             <Plus size={28} />
@@ -159,7 +160,7 @@ export const BikeControls = () => {
           <SportButton
             variant="control"
             onClick={() => adjustTargetPower(50)}
-            disabled={targetPower >= 600}
+            disabled={targetPower >= MAX_POWER}
             style={{ flex: 0.7, height: 48, fontSize: 16 }}
           >
             <Plus size={16} />
@@ -202,7 +203,7 @@ export const BikeControls = () => {
           <SportButton
             variant="control"
             onClick={() => adjustResistance(10)}
-            disabled={resistance >= 100}
+            disabled={resistance >= MAX_RESISTANCE}
             style={{ flex: 1, height: 52, fontSize: 18 }}
           >
             <Plus size={20} />
@@ -211,7 +212,7 @@ export const BikeControls = () => {
           <SportButton
             variant="control"
             onClick={() => adjustResistance(50)}
-            disabled={resistance >= 100}
+            disabled={resistance >= MAX_RESISTANCE}
             style={{ flex: 0.7, height: 40, fontSize: 14 }}
           >
             <Plus size={14} />

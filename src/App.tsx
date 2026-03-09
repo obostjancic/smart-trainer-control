@@ -3,15 +3,15 @@ import { Box, Stack } from "styled-system/jsx";
 import { ActivityChart } from "./components/ActivityChart";
 import { ActivityControls } from "./components/ActivityControls";
 import { BikeControls } from "./components/BikeControls";
-import { BikeProvider } from "./components/BikeProvider";
+import { BikeProvider, useBike } from "./components/BikeProvider";
 import { CurrentStats } from "./components/CurrentStats";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import { ActivitySummary } from "./components/ActivitySummary";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { ActivityProvider, useActivity } from "./contexts/ActivityContext";
 import { ActivityPoint, ActivityStatus } from "./hooks/useActivity";
 import { BikeData } from "./lib/bike/types";
 import { bikeBridge } from "./lib/bike";
-import { useBike } from "./components/BikeProvider";
 
 function AppContent() {
   const {
@@ -154,11 +154,13 @@ function AppContent() {
 
 function App() {
   return (
-    <BikeProvider>
-      <ActivityProvider>
-        <AppContent />
-      </ActivityProvider>
-    </BikeProvider>
+    <ErrorBoundary>
+      <BikeProvider>
+        <ActivityProvider>
+          <AppContent />
+        </ActivityProvider>
+      </BikeProvider>
+    </ErrorBoundary>
   );
 }
 

@@ -57,8 +57,8 @@ export function createSetTargetPowerData(targetPower: number): Uint8Array {
   const powerBytes = new Int16Array([targetPower]);
   return createControlPointData(
     FTMSControlOpCode.SetTargetPower,
-    powerBytes[0] ?? 0 & 0xff,
-    (powerBytes[0] ?? 0 >> 8) & 0xff
+    (powerBytes[0] ?? 0) & 0xff,
+    ((powerBytes[0] ?? 0) >> 8) & 0xff
   );
 }
 
@@ -67,8 +67,8 @@ export function createSetResistanceData(resistanceLevel: number): Uint8Array {
   const resistanceBytes = new Int16Array([resistanceLevel]);
   return createControlPointData(
     FTMSControlOpCode.SetTargetResistanceLevel,
-    resistanceBytes[0] ?? 0 & 0xff,
-    (resistanceBytes[0] ?? 0 >> 8) & 0xff
+    (resistanceBytes[0] ?? 0) & 0xff,
+    ((resistanceBytes[0] ?? 0) >> 8) & 0xff
   );
 }
 
@@ -77,7 +77,7 @@ export function createSetInclinationData(inclination: number): Uint8Array {
   const inclinationBytes = new Int16Array([inclination]);
   return createControlPointData(
     FTMSControlOpCode.SetTargetInclination,
-    inclinationBytes[0] ?? 0 & 0xff,
-    (inclinationBytes[0] ?? 0 >> 8) & 0xff
+    (inclinationBytes[0] ?? 0) & 0xff,
+    ((inclinationBytes[0] ?? 0) >> 8) & 0xff
   );
 }
