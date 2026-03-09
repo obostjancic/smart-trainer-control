@@ -124,6 +124,10 @@ class BluetoothBike extends BikeInterface {
       // Request control of the bike
       await this.sendControl("requestControl");
 
+      // Sync trainer to UI defaults so state matches after reload
+      await this.sendControl("targetPower", 100);
+      await this.sendControl("resistance", 0);
+
       this._isRunning = true;
       console.log("Bluetooth bike started");
     } catch (error) {
